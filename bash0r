@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source server.sh
+source urls.sh
+
+parseRequest
+
+routeURI
+
+exit 0
