@@ -10,6 +10,7 @@ declare -a OUTHDR=(
 declare -A STATUS=(
    [200]="OK"
    [500]="Error"
+   [302]="Moved Temporarily"
    [1337]="Lol"
 )
 declare -A PARAMS=()
@@ -19,7 +20,7 @@ debug() {
     echo "$(date) $@" >&2
 }
 addOutHdr() {
-    OUTHDR+=("$2: $3")
+    OUTHDR+=("$1: $2")
 }
 addInHdr() {
     INHDR+=("$1")
@@ -115,6 +116,7 @@ parseRequest() {
 }
 
 matchURI() {
+    source GET.sh
     local -n rs=$1
     debug "$rs"
     for r in "${!rs[@]}"
@@ -125,9 +127,7 @@ matchURI() {
         fi
         if [[ "$RURL" =~ $r ]]
         then
-            local content="$(${rs[$r]})"
-            answer 200 "$content"
-            return 
+            ${rs[$r]}
         fi
     done
 }
@@ -154,7 +154,12 @@ answer() {
         echo "$h"
     done
     echo
-    echo "$c"
+    if [ -n "$c" ]
+    then
+        echo "$c"
+    else
+        echo
+    fi
 }
 
 error() {
@@ -186,4 +191,9 @@ includeTpl() {
     then
         addTplParam "$1" "$(render $1)"
     fi 
+}
+
+redirect() {
+    addOutHdr "Location" "$1"
+    answer 302 ""
 }
