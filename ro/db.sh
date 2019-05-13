@@ -94,12 +94,45 @@ follower_cnt() {
 create_shit() {
     local s=$(echo "$2" | base64)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
-    local i=$(echo "$s" | sha256sum | cut -d' ' -f 1)
+    local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
     echo "$s" > "$SHITSDIR/$u/$i.shit"
-    echo "$u:$i.shit" >> "$SHITSDIR/shitstream.log"
+    echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
+    echo "$u:$i.shit" >> "$SHITSDIR/diarrhea.log"
+}
+
+fluid_diarrhea() {
+    tail -n "$2" "$SHITSDIR/diarrhea.log"
 }
 
 last_shits() {
-    tail -n "$2" "$SHITSDIR/shitstream.log"
+    tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log"
+}
+
+get_followers() {
+    declare -a -g FOLLOWERS=();
+    while read l
+    do
+        local ll=$([[ "$l" =~ ([^/]+)/[^/]+$ ]] && echo "${BASH_REMATCH[1]}")
+        local u=$(sed -n '2p' "$USERSDIR/$ll.user")
+        if [ -z "$u" -o "$(get_visibility $u)" = "off" ]
+        then
+            continue
+        fi
+        FOLLOWERS+=("$u")
+    done < <(find "$FOLLOWERSDIR/" -type f -name "$(echo "$1" | md5sum | cut -d' ' -f 1).follower")
+}
+
+get_following() {
+    declare -a -g FOLLOWING=();
+    while read l
+    do
+        local ll=$(basename "$l" | sed -e 's/\.follower/\.user/g')
+        local u=$(sed -n '2p' "$USERSDIR/$ll")
+        if [ -z "$u" -o "$(get_visibility $u)" = "off" ]
+        then
+            continue
+        fi
+        FOLLOWING+=("$u")
+    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower')
 }

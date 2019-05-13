@@ -71,6 +71,15 @@ g_shittr() {
     local fc=$(follow_cnt "$OUSER")
     local fec=$(follower_cnt "$OUSER")
     local if=$(is_following "$user" "$OUSER")
+    local u=$(echo "$OUSER" | md5sum | cut -d ' ' -f 1)
+
+    declare -a SHITS=()
+    while read q
+    do
+        local s=$(cat "./$SHITSDIR/$u/$q.shit" | head -n 1 | base64 -d)
+        s=$(urldecode "$s")
+        SHITS+=("$s")
+    done < <(last_shits "$user" 25)
 
     answer 200 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
 }
@@ -148,7 +157,7 @@ g_diarrhea() {
     # do
     #     echo  "$l"
     # done < <(last_shits "$user" "10")
-    # last_shits "$user" 10
+    last_shits "$user" 10
 
     answer 200 "$(addTplParam 'TITLE' "Diarrhea";  addTplParam 'USERNAME' "$user"; render 'diarrhea.sh')";
 }
@@ -157,6 +166,7 @@ g_shit() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
+    local user=$(get_user "$(get_cookie 'auth')")
     answer 200 "$(addTplParam 'TITLE' "Shit!"; addTplParam 'USERNAME' "$user"; render 'shit.sh')";
 }
 
@@ -167,17 +177,7 @@ g_shittr_following() {
     local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
-    declare -a FOLLOWING=();
-    while read l
-    do
-        local ll=$(basename "$l" | sed -e 's/\.follower/\.user/g')
-        local u=$(sed -n '2p' "$USERSDIR/$ll")
-        if [ -z "$u" -o "$(get_visibility $u)" = "off" ]
-        then
-            continue
-        fi
-        FOLLOWING+=("$u")
-    done < <(find "$FOLLOWERSDIR/$(echo "$OUSER" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower')
+    get_following "$OUSER"
 
     answer 200 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$user"; render 'following.sh')";
 }
@@ -189,17 +189,7 @@ g_shittr_followers() {
     local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
-    declare -a FOLLOWERS=();
-    while read l
-    do
-        local ll=$([[ "$l" =~ ([^/]+)/[^/]+$ ]] && echo "${BASH_REMATCH[1]}")
-        local u=$(sed -n '2p' "$USERSDIR/$ll.user")
-        if [ -z "$u" -o "$(get_visibility $u)" = "off" ]
-        then
-            continue
-        fi
-        FOLLOWERS+=("$u")
-    done < <(find "$FOLLOWERSDIR/" -type f -name "$(echo "$OUSER" | md5sum | cut -d' ' -f 1).follower")
+    get_followers "$OUSER"
 
     answer 200 "$(addTplParam 'TITLE' "@$OUSER's Followers"; addTplParam 'USERNAME' "$user"; render 'followers.sh')";
 }
