@@ -2,17 +2,16 @@ cat <<EOF
 <!doctype html>
 <html lang="en">
 
-$(render header.tpl)
+$(render header.sh)
 
   <body>
 
-$(render navigation.tpl)
+$(render navigation.sh)
 
     <main role="main" class="container">
 
       <div class="starter-template">
-        <h1>World is going down!</h1>
-        <p class="lead">Sign up now!</p>
+        <h1>Login</h1>
         <form method="POST">
             <input type="text" name="username">
             <input type="password" name="password">
@@ -22,7 +21,7 @@ $(render navigation.tpl)
 
     </main><!-- /.container -->
 
-$(render footer.tpl)
+$(render footer.sh)
   </body>
 </html>
 EOF

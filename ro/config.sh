@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DBDIR="../rw/db"
+SESSIONSDIR="$DBDIR/sessions"
+USERSDIR="$DBDIR/users"
+SHITPOSTDIR="$DBDIR/shitposts"
+FOLLOWERSDIR="$DBDIR/followers"
+
+STATICDIR="./static"
+TEMPLATESDIR="./templates"
+
+
+mkdir -p "$SESSIONSDIR" "$USERSDIR" "$STATICDIR" "$TEMPLATESDIR" "$SHITPOSTDIR" "$FOLLOWERSDIR"

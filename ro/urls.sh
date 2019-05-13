@@ -10,6 +10,7 @@ declare -A PURLS=(
     ['^/$']=p_index
     ['^/register$']=p_register
     ['^/login$']=p_login
+    ['^/settings$']=p_settings
 )
 
 declare -A GURLS=(
@@ -19,5 +20,8 @@ declare -A GURLS=(
     ['^/login$']=g_login
     ['^/logout$']=g_logout
     ['^/home$']=g_home
+    ['^/shittrs$']=g_shittrs
+    ['^/settings$']=g_settings
+    ['^/@([a-zA-Z0-9]+)$']=g_shittr
     ['^/static.*$']=g_static
 )

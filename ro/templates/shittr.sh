@@ -2,22 +2,23 @@ cat <<EOF
 <!doctype html>
 <html lang="en">
 
-$(render header.tpl)
+$(render header.sh)
 
   <body>
 
-$(render navigation.tpl)
+$(render navigation.sh)
 
     <main role="main" class="container">
 
       <div class="starter-template">
-        <h1>Welcome back, ${USERNAME}!</h1>
-        <p class="lead">Lorem ipsum dolor sit...</p>
+        <h1>${TITLE}</h1>
+        <ul>
+        </ul>
       </div>
 
     </main><!-- /.container -->
 
-$(render footer.tpl)
+$(render footer.sh)
   </body>
 </html>
 EOF

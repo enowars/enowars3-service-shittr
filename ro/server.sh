@@ -5,16 +5,17 @@ source utils.sh
 
 declare -A INHDR=()
 declare -a OUTHDR=(
-    "Server: Bash0r"
+    "Server: Shittr"
     "X-Frame-Options: sameorigin"
     "x-xss-protection: 1; mode=block"
     "x-content-type: nosniff"
 )
 declare -A STATUS=(
-   [200]="WORKS FOR ME"
+   [1337]="WORKS FOR ME"
    [302]="TRY AGAIN"
-   [404]="GTFO"
-   [500]="NOPE"
+   [403]="GTFO"
+   [404]="NOPE"
+   [500]="IT BURNS!!!"
 )
 declare -A PARAMS=()
 declare -A TPLPARAMS=()
@@ -182,8 +183,8 @@ error() {
 }
 
 render() {
-    local tplp="$1"
-    if [ ! -f "./templates/$tplp" ]
+    local t="$1"
+    if [ ! -f "./templates/$t" ]
     then
         error
     fi
@@ -197,7 +198,7 @@ render() {
         local -n ref="$k"
         ref="$v"
     done
-    source "./templates/$tplp"
+    source "./templates/$t"
 }
 
 includeTpl() {
@@ -212,19 +213,6 @@ redirect() {
     answer 302 ""
 }
 
-get_cookie() {
-    local cookies="${INHDR[Cookie]}"
-    local IFS=';'
-    read -r -a cks <<< "$cookies"
+parseRequest
 
-    for ck in "${cks[@]}"
-    do
-        local IFS='='
-        read -r -a c <<< "$ck"
-        if [ "$1" = "$(trim ${c[0]})" ]
-        then
-            echo "$(trim ${c[1]})"
-            break
-        fi
-    done
-}
+routeURI

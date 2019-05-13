@@ -5,7 +5,7 @@ cat <<EOF
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>${TITLE}</title>
+<title>${TITLE} | Shittr</title>
 
 <!-- Bootstrap core CSS -->
 <link href="/static/css/bootstrap.min.css" rel="stylesheet">
