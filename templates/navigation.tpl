@@ -7,15 +7,25 @@ cat <<EOF
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
+EOF
+if [ "$AUTHENTICATED" -eq 0 ]
+then 
+cat <<EOF
         <li class="nav-item">
           <a class="nav-link" href="/register">Register</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
         </li>
+EOF
+else
+cat <<EOF
         <li class="nav-item">
           <a class="nav-link" href="/logout">Logout</a>
         </li>
+EOF
+fi
+cat <<EOF
       </ul>
     </div>
   </nav>
