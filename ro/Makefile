@@ -1,4 +1,4 @@
 all: run
 
 run:
-	socat TCP4-LISTEN:8080,fork,reuseaddr EXEC:./shittr
+	socat OPENSSL-LISTEN:31337,fork,reuseaddr,pktinfo,cert=./static/ssl.crt,key=./static/ssl.key,verify=0 EXEC:./shittr

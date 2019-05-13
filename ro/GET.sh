@@ -67,8 +67,39 @@ g_shittr() {
     local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
+    local bio=$(get_bio "$OUSER")
+    local fc=$(follow_cnt "$OUSER")
+    local fec=$(follower_cnt "$OUSER")
+    local if=$(is_following "$user" "$OUSER")
 
-    answer 200 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
+    debug "########### $if"
+
+
+    answer 200 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
+}
+
+g_follow_shittr() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
+    fi
+    local user=$(get_user "$(get_cookie 'auth')")
+    local OUSER="${BASH_REMATCH[1]}"
+
+    follow_shittr "$user" "$OUSER"
+
+    redirect "/@${OUSER}"
+}
+
+g_unfollow_shittr() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
+    fi
+    local user=$(get_user "$(get_cookie 'auth')")
+    local OUSER="${BASH_REMATCH[1]}"
+
+    unfollow_shittr "$user" "$OUSER"
+
+    redirect "/@${OUSER}"
 }
 
 g_settings() {
@@ -79,7 +110,7 @@ g_settings() {
     local p=$(get_visibility "$user")
     local b=$(get_bio "$user")
 
-    answer 1337 "$(addTplParam 'TITLE' "My Profile"; 
+    answer 1337 "$(addTplParam 'TITLE' "Settings"; 
                     addTplParam 'isp' "$p"; 
                     addTplParam 'bio' "$b";
                     addTplParam 'USERNAME' "$user"; 
@@ -101,4 +132,11 @@ g_static() {
     else
         answer 404 "GTFO"
     fi
+}
+
+g_diarrhea() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
+    fi
+    answer 200 "$(addTplParam 'TITLE' "Diarrhea"; addTplParam 'USERNAME' "$user"; render 'diarrhea.sh')";
 }

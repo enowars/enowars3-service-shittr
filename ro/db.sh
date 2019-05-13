@@ -68,3 +68,26 @@ set_bio() {
 get_bio() {
     urldecode $(grep -P 'Bio=' "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" | sed -e 's/Bio=//g' | base64 -d || "")
 }
+
+follow_shittr() {
+    local fd="$FOLLOWERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1)"
+    debug "$fd, $1, $2"
+    mkdir -p "$fd"
+    touch "$fd/$(echo $2 | md5sum | cut -d ' ' -f 1).follower"
+}
+
+unfollow_shittr() {
+    find "$FOLLOWERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1)" -type f -name "$(echo $2 | md5sum | cut -d ' ' -f 1).follower" -delete
+}
+
+is_following() {
+    find "$FOLLOWERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1)" -type f -name "$(echo $2 | md5sum | cut -d ' ' -f 1).follower" 2>/dev/null | wc -l
+ }
+
+follow_cnt() {
+    ls -1 "$FOLLOWERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1)/" 2>/dev/null | wc -l 
+}
+
+follower_cnt() {
+    find "$FOLLOWERSDIR/" -type f -name "$(echo $1 | md5sum | cut -d ' ' -f 1).follower" 2>/dev/null | wc -l
+}
