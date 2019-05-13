@@ -10,3 +10,5 @@ VULNS:
 - I'll probably add some subtle RCE
 - Maybe some SQL or Template injection or so (?)
 - Maybe some debug options that leak flags?
+
+- Statuscode ist Stunden seit EPOCH Module $realStatuscode

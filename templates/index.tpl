@@ -1,12 +1,12 @@
-echo <<EOF
+cat <<EOF
 <!doctype html>
 <html lang="en">
 
-${header.tpl}
+$(render header.tpl)
 
   <body>
 
-${navigation.tpl}
+$(render navigation.tpl)
 
     <main role="main" class="container">
 
@@ -17,7 +17,7 @@ ${navigation.tpl}
 
     </main><!-- /.container -->
 
-${footer.tpl}
+$(render footer.tpl)
   </body>
 </html>
 EOF

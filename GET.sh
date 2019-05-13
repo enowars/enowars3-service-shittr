@@ -2,11 +2,7 @@
 source db.sh
 
 g_index() {
-    answer 200 "$(addTplParam 'TITLE' 'Welcome | Bash0r';
-    includeTpl 'header.tpl';
-    includeTpl 'navigation.tpl';
-    includeTpl 'footer.tpl';
-    render 'index.tpl')"
+    answer 200 "$(addTplParam 'TITLE' 'Welcome | Bash0r'; render 'index.tpl')"
 }
 
 g_favicon() {
@@ -14,18 +10,11 @@ g_favicon() {
 }
 
 g_register() {
-    answer 200 "$(addTplParam 'TITLE' 'Register | Bash0r';
-    includeTpl 'header.tpl';
-    includeTpl 'navigation.tpl';
-    includeTpl 'footer.tpl';
-    render 'register.tpl')";
+    answer 200 "$(addTplParam 'TITLE' 'Register | Bash0r'; render 'register.tpl')";
 }
 
 g_login() {
     answer 200 "$(addTplParam 'TITLE' 'Login | Bash0r';
-    includeTpl 'header.tpl';
-    includeTpl 'navigation.tpl';
-    includeTpl 'footer.tpl';
     render 'login.tpl')";
 }
 
@@ -45,12 +34,7 @@ g_home() {
     local user=$(get_user "$(get_cookie 'auth')")
 
 
-    answer 200 "$(addTplParam 'TITLE' 'Home | Bash0r';
-    addTplParam 'USERNAME' "$user";
-    includeTpl 'header.tpl';
-    includeTpl 'navigation.tpl';
-    includeTpl 'footer.tpl';
-    render 'home.tpl')";
+    answer 200 "$(addTplParam 'TITLE' 'Home | Bash0r'; addTplParam 'USERNAME' "$user"; render 'home.tpl')";
 }
 
 g_static() {

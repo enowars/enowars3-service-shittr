@@ -187,8 +187,6 @@ render() {
     then
         error
     fi
-    local tplc=$(cat "./templates/$tplp")
-
     for k in "${!TPLPARAMS[@]}"
     do
         if [ -z "$k" ]
@@ -196,9 +194,10 @@ render() {
             continue 
         fi
         local v="${TPLPARAMS[$k]}"
-        tplc="${tplc/\$\{$k\}/$v}"
+        local -n ref="$k"
+        ref="$v"
     done
-    echo "$tplc"
+    source "./templates/$tplp"
 }
 
 includeTpl() {
