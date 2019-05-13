@@ -1,3 +1,4 @@
+echo <<EOF
 <!doctype html>
 <html lang="en">
 
@@ -19,3 +20,4 @@ ${navigation.tpl}
 ${footer.tpl}
   </body>
 </html>
+EOF

@@ -64,5 +64,7 @@ g_static() {
     elif [ -d "./$RURL" ]
     then
         ls -lha "./$RURL"
-    fi 
+    else
+        answer 404 "GTFO"
+    fi
 }

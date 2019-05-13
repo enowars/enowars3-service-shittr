@@ -11,10 +11,10 @@ declare -a OUTHDR=(
     "x-content-type: nosniff"
 )
 declare -A STATUS=(
-   [200]="OK"
-   [500]="Error"
-   [302]="Moved Temporarily"
-   [1337]="Lol"
+   [200]="WORKS FOR ME"
+   [302]="TRY AGAIN"
+   [404]="GTFO"
+   [500]="NOPE"
 )
 declare -A PARAMS=()
 declare -A TPLPARAMS=()
@@ -133,8 +133,10 @@ matchURI() {
         if [[ "$RURL" =~ $r ]]
         then
             ${rs[$r]}
+            return 
         fi
     done
+    answer 404 "GTFO"
 }
 
 routeURI() {
@@ -159,6 +161,8 @@ answer() {
         echo "$h"
     done
     echo
+    echo
+    echo 
     if [ -n "$c" ]
     then
         echo "$c"
