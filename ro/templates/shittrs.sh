@@ -11,7 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
-        <h1>Here are you fellow shittrs, @${USERNAME}!</h1>
+        <h1>Here are your fellow shittrs, @${USERNAME}!</h1>
         <ul>
 EOF
     for s in "${SHITTRS[@]}";

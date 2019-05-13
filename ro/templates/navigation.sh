@@ -8,7 +8,7 @@ cat <<EOF
 EOF
 else
 cat <<EOF
-    <a class="navbar-brand" href="/@${USERNAME}">${TITLE} | Shittr</a>
+    <a class="navbar-brand" href="/@${USERNAME}">@${USERNAME} | Shittr</a>
 EOF
 fi
 cat <<EOF

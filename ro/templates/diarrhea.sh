@@ -12,6 +12,14 @@ $(render navigation.sh)
 
       <div class="starter-template">
         <h1>The world's biggest shit stream!</h1>
+        <ul>
+EOF
+        for s in "${SHITS[@]}"
+        do 
+          echo "<p>${s}</p>"
+        done
+cat <<EOF
+        </ul>
       </div>
 
     </main><!-- /.container -->

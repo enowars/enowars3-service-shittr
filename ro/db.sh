@@ -102,11 +102,31 @@ create_shit() {
 }
 
 fluid_diarrhea() {
-    tail -n "$2" "$SHITSDIR/diarrhea.log"
+    declare -a ids=();
+    declare -a -g SHITS=();
+    while read l;
+    do
+        local ll=$(basename "$l" | sed -e 's/\.follower//g')
+        ids+=("$ll")
+    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower')
+
+    local ids=$(join_by '|' "${ids[@]}")
+    debug "IDS are ($ids)"
+
+    while read l;
+    do 
+        local IFS=':'
+        read -r uid sid <<< "$l"
+        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1 | base64 -d)
+        s=$(urldecode "$s")
+        s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
+        local u=$(sed -n '2p' "$USERSDIR/$uid.user")
+        SHITS+=("<a href='/@$u'>@$u</a>: $s")
+    done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)" | head -n "$2")
 }
 
 last_shits() {
-    tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log"
+    tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log" | tac
 }
 
 get_followers() {

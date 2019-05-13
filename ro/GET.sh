@@ -78,8 +78,9 @@ g_shittr() {
     do
         local s=$(cat "./$SHITSDIR/$u/$q.shit" | head -n 1 | base64 -d)
         s=$(urldecode "$s")
+        s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         SHITS+=("$s")
-    done < <(last_shits "$user" 25)
+    done < <(last_shits "$OUSER" 25)
 
     answer 200 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
 }
@@ -151,15 +152,9 @@ g_diarrhea() {
     fi
     local user=$(get_user "$(get_cookie 'auth')")
 
-    declare -a SHITS=()
+    fluid_diarrhea "$user" "25"
 
-    # while read l
-    # do
-    #     echo  "$l"
-    # done < <(last_shits "$user" "10")
-    last_shits "$user" 10
-
-    answer 200 "$(addTplParam 'TITLE' "Diarrhea";  addTplParam 'USERNAME' "$user"; render 'diarrhea.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Diarrhea";  addTplParam 'USERNAME' "$user"; render 'diarrhea.sh')";
 }
 
 g_shit() {

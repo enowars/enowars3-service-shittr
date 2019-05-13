@@ -27,5 +27,8 @@ get_cookie() {
     done
 }
 
-#https://stackoverflow.com/questions/6250698/how-to-decode-url-encoded-string-in-shell
+# https://stackoverflow.com/questions/6250698/how-to-decode-url-encoded-string-in-shell
 urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
+# https://stackoverflow.com/questions/1527049/how-can-i-join-elements-of-an-array-in-bash
+join_by() { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
