@@ -93,3 +93,14 @@ p_settings() {
 
     redirect "/settings"
 }
+
+p_shit() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
+    fi
+    local user=$(get_user "$(get_cookie 'auth')")
+
+    create_shit "$user" "${PARAMS[post]}"
+
+    redirect "/diarrhea"
+}

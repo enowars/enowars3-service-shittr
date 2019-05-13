@@ -35,6 +35,9 @@ cat <<EOF
           <a class="nav-link" href="/diarrhea">Diarrhea</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="/shit">Shit!</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/shittrs">Shittrs</a>
         </li>
         <li class="nav-item">

@@ -11,6 +11,7 @@ declare -A PURLS=(
     ['^/register$']=p_register
     ['^/login$']=p_login
     ['^/settings$']=p_settings
+    ['^/shit$']=p_shit
 )
 
 declare -A GURLS=(
@@ -21,10 +22,13 @@ declare -A GURLS=(
     ['^/logout$']=g_logout
     ['^/home$']=g_home
     ['^/shittrs$']=g_shittrs
+    ['^/shit$']=g_shit
     ['^/diarrhea$']=g_diarrhea
     ['^/settings$']=g_settings
+    ['^/@([a-zA-Z0-9]+)/following$']=g_shittr_following
+    ['^/@([a-zA-Z0-9]+)/followers$']=g_shittr_followers
+    ['^/@([a-zA-Z0-9]+)/unfollow$']=g_unfollow_shittr
+    ['^/@([a-zA-Z0-9]+)/follow$']=g_follow_shittr
     ['^/@([a-zA-Z0-9]+)$']=g_shittr
-    ['^/follow/@([a-zA-Z0-9]+)$']=g_follow_shittr
-    ['^/unfollow/@([a-zA-Z0-9]+)$']=g_unfollow_shittr
     ['^/static.*$']=g_static
 )

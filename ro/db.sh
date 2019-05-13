@@ -60,7 +60,6 @@ get_visibility() {
 }
 
 set_bio() {
-    debug "$2"
     local b=$(echo "$2" | base64)
     sed -i -e "s/Bio=.*$/Bio=$b/g" "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user"
 }
@@ -90,4 +89,17 @@ follow_cnt() {
 
 follower_cnt() {
     find "$FOLLOWERSDIR/" -type f -name "$(echo $1 | md5sum | cut -d ' ' -f 1).follower" 2>/dev/null | wc -l
+}
+
+create_shit() {
+    local s=$(echo "$2" | base64)
+    local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
+    local i=$(echo "$s" | sha256sum | cut -d' ' -f 1)
+    mkdir -p "$SHITSDIR/$u/"
+    echo "$s" > "$SHITSDIR/$u/$i.shit"
+    echo "$u:$i.shit" >> "$SHITSDIR/shitstream.log"
+}
+
+last_shits() {
+    tail -n "$2" "$SHITSDIR/shitstream.log"
 }
