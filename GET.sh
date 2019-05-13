@@ -30,8 +30,8 @@ g_login() {
 }
 
 g_logout() {
-    if ! valid_session "$(get_cookie 'auth')"; then
-        error "no valid session"
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
     fi
     logout "$(get_cookie 'auth')"
 
@@ -39,8 +39,8 @@ g_logout() {
 }
 
 g_home() {
-    if ! valid_session "$(get_cookie 'auth')"; then
-        error "no valid session"
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
 

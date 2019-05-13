@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source urls.sh
 source utils.sh
 
 declare -A INHDR=()
@@ -113,10 +114,14 @@ parseRequest() {
     then 
         parseBody
     fi
+
+    for mw in "${MIDDLEWARES[@]}"
+    do 
+        $mw
+    done
 }
 
 matchURI() {
-    source urls.sh
     local -n rs=$1
     debug "$rs"
     for r in "${!rs[@]}"

@@ -1,5 +1,10 @@
 #!/bin/bash
 source handlers.sh
+source middlewares.sh
+
+declare -a MIDDLEWARES=(
+    is_authenticated
+)
 
 declare -A PURLS=(
     ['^/$']=p_index
