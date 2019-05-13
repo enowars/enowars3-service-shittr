@@ -10,7 +10,10 @@
           <a class="nav-link" href="/register">Register</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
       </ul>
     </div>

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-declare -a INHDR=()
+source utils.sh
+
+declare -A INHDR=()
 declare -a OUTHDR=(
     "Server: Bash0r"
     "X-Frame-Options: sameorigin"
@@ -23,7 +25,12 @@ addOutHdr() {
     OUTHDR+=("$1: $2")
 }
 addInHdr() {
-    INHDR+=("$1")
+    local IFS=':'
+    read -r -a p <<< "$1"
+    if [ -n "${p[0]}" -a -n "${p[1]}" ]
+    then
+        INHDR+=(["${p[0]}"]="${p[1]}")
+    fi
 }
 addParam() {
     local IFS='='
@@ -43,9 +50,6 @@ parseArgs() {
     RMETH="${p[0]}"
     RURL="${p[1]}"
     RVER="${p[2]}"
-    debug "$RMETH"
-    debug "$RURL"
-    debug "$RVER"
     if [ -z "$RMETH" -o -z "$RURL" -o -z "$RVER" ]
     then
         exit 1
@@ -57,15 +61,14 @@ parseRegHdrs() {
         hdrLine=${hdrLine%%$'\r'}
         if [ ! -n "$hdrLine" ]
         then
-            return 
+            break 
         fi
-        #debug "$hdrLine"
-        INHDR+=("$hdrLine")
+        addInHdr "$hdrLine"
     done
 }
 
 parseBody() {
-    read -r body
+    read -d '' -r -n "${INHDR['Content-Length']}" body
     if [ ! -n "$body" ]
     then 
         return 
@@ -74,7 +77,6 @@ parseBody() {
     read -r -a ps <<< "$body"
     for kv in "${ps[@]}"
     do
-        debug "$kv"
         addParam "$kv"
     done
 }
@@ -103,7 +105,6 @@ parseRequest() {
     debug "$RMETH, $RURL, $RVER"
 
     parseRegHdrs
-    debug "${INHDR[@]}"
 
     if [ "$RMETH" = "GET" ]
     then 
@@ -111,12 +112,11 @@ parseRequest() {
     elif [ "$RMETH" = "POST" ]
     then 
         parseBody
-        debug "${PARAMS[@]}"
     fi
 }
 
 matchURI() {
-    source GET.sh
+    source urls.sh
     local -n rs=$1
     debug "$rs"
     for r in "${!rs[@]}"
@@ -163,7 +163,13 @@ answer() {
 }
 
 error() {
-    answer 500 "n0p3"
+    if [ $# -eq 1 ]
+    then
+        answer 500 "n0p3, $1"
+    else
+        answer 500 "n0p3"
+    fi
+    exit 1
 }
 
 render() {
@@ -196,4 +202,21 @@ includeTpl() {
 redirect() {
     addOutHdr "Location" "$1"
     answer 302 ""
+}
+
+get_cookie() {
+    local cookies="${INHDR[Cookie]}"
+    local IFS=';'
+    read -r -a cks <<< "$cookies"
+
+    for ck in "${cks[@]}"
+    do
+        local IFS='='
+        read -r -a c <<< "$ck"
+        if [ "$1" = "$(trim ${c[0]})" ]
+        then
+            echo "$(trim ${c[1]})"
+            break
+        fi
+    done
 }

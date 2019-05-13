@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source urls.sh
 source server.sh
 
 parseRequest
