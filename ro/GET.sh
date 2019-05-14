@@ -5,7 +5,7 @@ g_index() {
     if [ $AUTHENTICATED -eq 1 ]; then
         redirect "/home"
     fi
-    answer 200 "$(addTplParam 'TITLE' 'Welcome'; render 'index.sh')"
+    answer 1337 "$(addTplParam 'TITLE' 'Welcome'; render 'index.sh')"
 }
 
 g_favicon() {
@@ -13,11 +13,11 @@ g_favicon() {
 }
 
 g_register() {
-    answer 200 "$(addTplParam 'TITLE' 'Register'; render 'register.sh')";
+    answer 1337 "$(addTplParam 'TITLE' 'Register'; render 'register.sh')";
 }
 
 g_login() {
-    answer 200 "$(addTplParam 'TITLE' 'Login';
+    answer 1337 "$(addTplParam 'TITLE' 'Login';
     render 'login.sh')";
 }
 
@@ -37,7 +37,7 @@ g_home() {
     local user=$(get_user "$(get_cookie 'auth')")
 
 
-    answer 200 "$(addTplParam 'TITLE' 'Home'; addTplParam 'USERNAME' "$user"; render 'home.sh')";
+    answer 1337 "$(addTplParam 'TITLE' 'Home'; addTplParam 'USERNAME' "$user"; render 'home.sh')";
 }
 
 g_shittrs() {
@@ -57,7 +57,7 @@ g_shittrs() {
         SHITTRS+=("$u")
     done < <(find "$USERSDIR" -type f -name '*.user')
 
-    answer 200 "$(addTplParam 'TITLE' 'Shittrs'; addTplParam 'USERNAME' "$user"; render 'shittrs.sh')";
+    answer 1337 "$(addTplParam 'TITLE' 'Shittrs'; addTplParam 'USERNAME' "$user"; render 'shittrs.sh')";
 }
 
 g_shittr() {
@@ -83,7 +83,7 @@ g_shittr() {
         SHITS+=("$s")
     done < <(last_shits "$OUSER" 25)
 
-    answer 200 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
 }
 
 g_follow_shittr() {
@@ -174,7 +174,7 @@ g_shit() {
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
-    answer 200 "$(addTplParam 'TITLE' "Shit!"; addTplParam 'USERNAME' "$user"; render 'shit.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Shit!"; addTplParam 'USERNAME' "$user"; render 'shit.sh')";
 }
 
 g_shittr_following() {
@@ -186,7 +186,7 @@ g_shittr_following() {
 
     get_following "$OUSER"
 
-    answer 200 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$user"; render 'following.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$user"; render 'following.sh')";
 }
 
 g_shittr_followers() {
@@ -198,5 +198,5 @@ g_shittr_followers() {
 
     get_followers "$OUSER"
 
-    answer 200 "$(addTplParam 'TITLE' "@$OUSER's Followers"; addTplParam 'USERNAME' "$user"; render 'followers.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Followers"; addTplParam 'USERNAME' "$user"; render 'followers.sh')";
 }
