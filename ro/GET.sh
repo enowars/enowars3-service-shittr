@@ -79,6 +79,7 @@ g_shittr() {
         local s=$(cat "./$SHITSDIR/$u/$q.shit" | head -n 1 | base64 -d)
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
+        s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         SHITS+=("$s")
     done < <(last_shits "$OUSER" 25)
 
@@ -129,6 +130,17 @@ g_settings() {
                     render 'settings.sh')";
 }
 
+g_tag(){
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        redirect "/login"
+    fi
+    local user=$(get_user "$(get_cookie 'auth')")
+    local tag="${BASH_REMATCH[1]}"
+
+    get_tag "$tag" "25"
+
+    answer 1337 "$(addTplParam 'TITLE' "Tag ${tag}"; addTplParam "TAG" "$tag"; addTplParam 'USERNAME' "$user"; render 'tag.sh')";
+}
 
 g_static() {
     if [[ "$RURL" =~ ".." ]]

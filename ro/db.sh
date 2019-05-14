@@ -99,6 +99,18 @@ create_shit() {
     echo "$s" > "$SHITSDIR/$u/$i.shit"
     echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
     echo "$u:$i.shit" >> "$SHITSDIR/diarrhea.log"
+
+
+    echo $(urldecode "$2") |grep -oP '(#[A-Za-z0-9]+)' | while read h
+    do
+        debug "TAGTAGTAGTAG $h / $u & $i"
+        create_tag "$h" "$u:$i"
+    done
+}
+
+create_tag() {
+    local h=$(echo "$1" | md5sum | cut -d' ' -f 1)
+    echo "$2">>"$HASHTAGSDIR/$h.tag"
 }
 
 fluid_diarrhea() {
@@ -120,10 +132,28 @@ fluid_diarrhea() {
         local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1 | base64 -d)
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
+        s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<a href='/@$u'>@$u</a>: $s")
     done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)" | head -n "$2")
 }
+
+get_tag() {
+    declare -a -g SHITS=();
+
+    while read l;
+    do 
+        local IFS=':'
+        read -r uid sid <<< "$l"
+        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1 | base64 -d)
+        s=$(urldecode "$s")
+        s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
+        s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
+        local u=$(sed -n '2p' "$USERSDIR/$uid.user")
+        SHITS+=("<a href='/@$u'>@$u</a>: $s")
+    done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag" | head -n "$2")
+}
+
 
 last_shits() {
     tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log" | tac

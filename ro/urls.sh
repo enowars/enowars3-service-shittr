@@ -25,6 +25,7 @@ declare -A GURLS=(
     ['^/shit$']=g_shit
     ['^/diarrhea$']=g_diarrhea
     ['^/settings$']=g_settings
+    ['^/tag/([a-zA-Z0-9]+)$']=g_tag
     ['^/@([a-zA-Z0-9]+)/following$']=g_shittr_following
     ['^/@([a-zA-Z0-9]+)/followers$']=g_shittr_followers
     ['^/@([a-zA-Z0-9]+)/unfollow$']=g_unfollow_shittr
