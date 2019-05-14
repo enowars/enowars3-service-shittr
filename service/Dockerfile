@@ -8,4 +8,4 @@ RUN mkdir /service && chown -R 999:999 /service
 WORKDIR /service
 USER shittr
 
-CMD ["bash", "-c", "cd ro && make run"]
+CMD ["bash", "-c", "cd ro && make run6"]
