@@ -13,7 +13,7 @@ p_register() {
     then 
         error "no username or password"
     fi 
-    if [[ ! "$username" =~ ^[A-Z0-9]$ ]] && [[ "$password" =~ ^[A-Z0-9]$ ]]
+    if [[ ! "$username" =~ ^[a-zA-Z0-9]+$ ]] || [[ ! "$password" =~ ^[a-zA-Z0-9]+$ ]]
     then
         error "username and password do not match regex"
     fi 
@@ -24,6 +24,9 @@ p_register() {
     if ! create_user "$username" "$password"; then
         error "could not create user"
     fi
+
+
+    addMsg "success" "Successfully signed up as @$username!"
 
     redirect "/login"
 }
@@ -36,7 +39,7 @@ p_login() {
     then 
         error "no username or password"
     fi 
-    if [[ ! "$username" =~ ^[A-Z0-9]$ ]] && [[ "$password" =~ ^[A-Z0-9]$ ]]
+    if [[ ! "$username" =~ ^[a-zA-Z0-9]+$ ]] || [[ ! "$password" =~ ^[a-zA-Z0-9]+$ ]]
     then
         error "username and password do not match regex"
     fi 
@@ -52,38 +55,14 @@ p_login() {
 
     addOutHdr "Set-Cookie" "auth=$cookie"
 
-    redirect "/home"
-}
-
-p_login() {
-    local username="${PARAMS[username]}"
-    local password="${PARAMS[password]}"
-
-    if [ -z "$username" -o -z "$password" ]
-    then 
-        error "no username or password"
-    fi 
-    if [[ ! "$username" =~ ^[A-Z0-9]$ ]] && [[ "$password" =~ ^[A-Z0-9]$ ]]
-    then
-        error "username and password do not match regex"
-    fi 
-    if ! user_exists "$username"; then
-        error "user does not exist"
-    fi
-    if ! valid_login "$username" "$password"
-    then
-        error "wrong credentials"
-    fi
-
-    local cookie="$(generate_session $username)"
-
-    addOutHdr "Set-Cookie" "auth=$cookie"
+    addMsg "success" "Successfully logged in as @$username!"
 
     redirect "/home"
 }
 
 p_settings() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -eq 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -91,16 +70,21 @@ p_settings() {
     set_visibility "$user" "${PARAMS[public]}"
     set_bio "$user" "${PARAMS[bio]}"
 
+    addMsg "success" "Profile settings successfully updated!"
+
     redirect "/settings"
 }
 
 p_shit() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
 
     create_shit "$user" "${PARAMS[post]}"
+
+    addMsg "success" "Successfully shat!"
 
     redirect "/diarrhea"
 }

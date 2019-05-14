@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>Whom is @${OUSER} following?</h1>
         <ul>
 EOF

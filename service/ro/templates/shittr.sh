@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>${TITLE}</h1>
         <h2>$bio</h2>
         <p>$(if [ $if -eq 0 ]; then echo "<a href='/@${OUSER}/follow'>Follow</a>"; else  echo "<a href='/@${OUSER}/unfollow'>Unfollow</a>"; fi) (Follows <a href='/@${OUSER}/following'>$followCnt</a> Shittrs / <a href='/@${OUSER}/followers'>$followerCnt</a> Shitters following)</p>

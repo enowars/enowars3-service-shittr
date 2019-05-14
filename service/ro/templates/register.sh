@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>Register now!</h1>
         <form method="POST">
             <input type="text" name="username">

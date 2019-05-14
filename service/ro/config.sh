@@ -7,6 +7,7 @@ USERSDIR="$DBDIR/users"
 SHITSDIR="$DBDIR/shitposts"
 FOLLOWERSDIR="$DBDIR/followers"
 HASHTAGSDIR="$DBDIR/hashtags"
+MESSAGESDIR="$DBDIR/messages"
 
 STATICDIR="./static"
 TEMPLATESDIR="./templates"
@@ -16,7 +17,7 @@ LOGDIR="$RWDIR/logs"
 LOGPATH="$LOGDIR/shittr.log"
 
 mkdir -p "$SESSIONSDIR" "$USERSDIR" "$STATICDIR" "$TEMPLATESDIR" "$SHITSDIR" "$FOLLOWERSDIR" "$HASHTAGSDIR"
-mkdir -p "$LOGDIR"
+mkdir -p "$LOGDIR" "$MESSAGESDIR"
 
 if [ ! -f "$ENCKEY" ]
 then

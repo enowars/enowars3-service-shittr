@@ -45,7 +45,6 @@ addParam() {
 addTplParam() {
     TPLPARAMS+=(["$1"]="$2")
 }
-
 parseArgs() {
     local IFS=' '
     read -r -a p <<< "$1"
@@ -143,11 +142,9 @@ matchURI() {
 routeURI() {
     if [ "$RMETH" = "GET" ]
     then 
-        debug "GET"
         matchURI GURLS
     elif [ "$RMETH" = "POST" ]
     then 
-        debug "POST"
         matchURI PURLS
     fi
 }
@@ -195,8 +192,8 @@ render() {
             continue 
         fi
         local v="${TPLPARAMS[$k]}"
-        local -n ref="$k"
-        ref="$v"
+        local -n r="$k"
+        r="$v"
     done
     source "./templates/$t"
 }

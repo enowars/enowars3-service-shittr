@@ -23,15 +23,19 @@ g_login() {
 
 g_logout() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     logout "$(get_cookie 'auth')"
+
+    addMsg "success" "Successfully logged out!"
 
     redirect "/"
 }
 
 g_home() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -eq 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -41,7 +45,8 @@ g_home() {
 }
 
 g_shittrs() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -eq 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
 
@@ -60,7 +65,8 @@ g_shittrs() {
 }
 
 g_shittr() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -lt 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -85,7 +91,8 @@ g_shittr() {
 }
 
 g_follow_shittr() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ ! $AUTHENTICATED -gt 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -96,12 +103,14 @@ g_follow_shittr() {
     fi
 
     follow_shittr "$USER" "$OUSER"
+    addMsg "success" "You're following @$OUSER now!"
 
     redirect "/@${OUSER}"
 }
 
 g_unfollow_shittr() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -109,11 +118,14 @@ g_unfollow_shittr() {
 
     unfollow_shittr "$user" "$OUSER"
 
+    addMsg "success" "You're not following @$OUSER anymore!"
+
     redirect "/@${OUSER}"
 }
 
 g_settings() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -129,6 +141,7 @@ g_settings() {
 
 g_tag(){
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local tag="${BASH_REMATCH[1]}"
@@ -155,7 +168,8 @@ g_static() {
 }
 
 g_diarrhea() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -eq 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
 
@@ -165,7 +179,8 @@ g_diarrhea() {
 }
 
 g_shit() {
-    if [ ! $AUTHENTICATED -eq 1 ]; then
+    if [ $AUTHENTICATED -eq 0 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -174,6 +189,7 @@ g_shit() {
 
 g_shittr_following() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -185,6 +201,7 @@ g_shittr_following() {
 
 g_shittr_followers() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"

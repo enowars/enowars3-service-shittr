@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>When shit hits the fan...</h1>
         <p class="lead">...this is the place to be!</p>
       </div>

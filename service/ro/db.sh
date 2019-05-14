@@ -55,12 +55,22 @@ set_visibility() {
     sed -i -e "s/Public=$s/Public=$p/g" "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user"
 }
 
+addMsg() {
+    local b=$(echo "$2" | base64 -w 0)
+    echo "$1:$b">> "$MESSAGESDIR/$(echo $USER | md5sum | cut -d ' ' -f 1).msg"
+}
+
+getMsgs() {
+    tac "$MESSAGESDIR/$(echo $USER | md5sum | cut -d ' ' -f 1).msg"
+    rm  "$MESSAGESDIR/$(echo $USER | md5sum | cut -d ' ' -f 1).msg"
+}
+
 get_visibility() {
     grep -P 'Public=' "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" | sed -e 's/Public=//g' || "on"
 }
 
 set_bio() {
-    local b=$(echo "$2" | base64)
+    local b=$(echo "$2" | base64 -w 0)
     sed -i -e "s/Bio=.*$/Bio=$b/g" "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user"
 }
 

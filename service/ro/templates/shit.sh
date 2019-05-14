@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>Don't shit yourself...</h1>
         <form method="post">
             <textarea name='post'>...shit the others!</textarea>

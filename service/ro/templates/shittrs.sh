@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>Here are your fellow shittrs, @${USERNAME}!</h1>
         <ul>
 EOF

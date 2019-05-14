@@ -11,6 +11,7 @@ $(render navigation.sh)
     <main role="main" class="container">
 
       <div class="starter-template">
+        $(render messages.sh)
         <h1>${TITLE}</h1>
         <form method="POST">
             <label for='public'>Public profile?</label><input type='checkbox' name='public' $( [ "on" = "$isp" ] && echo -n "checked='checked'")>

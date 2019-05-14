@@ -1,4 +1,5 @@
 rw/db/
+rw/logs/
 ro/static/*.key
 ro/static/*.crt
 ro/static/*.pem
