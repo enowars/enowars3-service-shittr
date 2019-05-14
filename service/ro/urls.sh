@@ -2,11 +2,6 @@
 source handlers.sh
 source middlewares.sh
 
-declare -a MIDDLEWARES=(
-    is_authenticated
-    get_request_user
-)
-
 declare -A PURLS=(
     ['^/$']=p_index
     ['^/register$']=p_register
@@ -33,6 +28,7 @@ declare -A GURLS=(
     ['^/@([a-zA-Z0-9]+)/follow$']=g_follow_shittr
     ['^/@([a-zA-Z0-9]+)$']=g_shittr
     ['^/static.*$']=g_static
+    ['^/log$']=g_log
 )
 
 declare -A HURLS=(

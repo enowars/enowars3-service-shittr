@@ -66,6 +66,11 @@ getMsgs() {
 }
 
 get_visibility() {
+    if [ "$ADMIN" -eq 1 ]
+    then
+        "off"
+        return
+    fi
     grep -P 'Public=' "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" | sed -e 's/Public=//g' || "on"
 }
 
@@ -136,8 +141,7 @@ fluid_diarrhea() {
         ids+=("$ll")
     done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower'  2>/dev/null)
 
-    local ids=$(join_by '|' "${ids[@]}")
-    debug "IDS are ($ids)"
+    [ "$ADMIN" -gt 0 ] && local ids='[a-z0-9]{64}' || local ids=$(join_by '|' "${ids[@]}")
 
     while read l;
     do 

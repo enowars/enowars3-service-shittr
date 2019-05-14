@@ -199,6 +199,15 @@ g_shittr_following() {
     answer 1337 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$USER"; render 'following.sh')";
 }
 
+g_log() {
+    if [ "$ADMIN" -eq 1 ]
+    then
+        answer 1337 "$(tac "$LOGPATH" | grep "$SOCAT_PEERADDR" | head -n 100)"
+    fi
+
+    error
+}
+
 g_shittr_followers() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         addMsg "error" "You are not logged in!"
