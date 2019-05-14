@@ -120,7 +120,7 @@ fluid_diarrhea() {
     do
         local ll=$(basename "$l" | sed -e 's/\.follower//g')
         ids+=("$ll")
-    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower')
+    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower'  2>/dev/null)
 
     local ids=$(join_by '|' "${ids[@]}")
     debug "IDS are ($ids)"
@@ -135,7 +135,7 @@ fluid_diarrhea() {
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<a href='/@$u'>@$u</a>: $s")
-    done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)" | head -n "$2")
+    done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)"  2>/dev/null | head -n "$2")
 }
 
 get_tag() {
@@ -151,12 +151,12 @@ get_tag() {
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<a href='/@$u'>@$u</a>: $s")
-    done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag" | head -n "$2")
+    done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag"  2>/dev/null | head -n "$2")
 }
 
 
 last_shits() {
-    tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log" | tac
+    tail -n "$2" "$SHITSDIR/$(echo "$1" | md5sum | cut -d ' ' -f 1)/diarrhea.log"  2>/dev/null | tac
 }
 
 get_followers() {
@@ -184,5 +184,5 @@ get_following() {
             continue
         fi
         FOLLOWING+=("$u")
-    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower')
+    done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower' 2>/dev/null)
 }

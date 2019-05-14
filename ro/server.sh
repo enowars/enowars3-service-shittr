@@ -15,7 +15,7 @@ declare -A STATUS=(
    [302]="TRY AGAIN"
    [403]="GTFO"
    [404]="NOPE"
-   [500]="IT BURNS!!!"
+   [4242]="IT BURNS!!!"
 )
 declare -A PARAMS=()
 declare -A TPLPARAMS=()
@@ -175,9 +175,9 @@ answer() {
 error() {
     if [ $# -eq 1 ]
     then
-        answer 500 "n0p3, $1"
+        answer 4242 "n0p3, $1"
     else
-        answer 500 "n0p3"
+        answer 4242 "n0p3"
     fi
     exit 1
 }
