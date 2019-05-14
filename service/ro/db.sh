@@ -129,6 +129,11 @@ fluid_diarrhea() {
     while read l;
     do
         local ll=$(basename "$l" | sed -e 's/\.follower//g')
+        debug "GREEEEEP $(grep 'Public=off' "$USERSDIR/$ll.user")"
+        if grep -q 'Public=off' "$USERSDIR/$ll.user";
+        then
+            continue
+        fi
         ids+=("$ll")
     done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower'  2>/dev/null)
 
@@ -175,7 +180,7 @@ get_followers() {
     do
         local ll=$([[ "$l" =~ ([^/]+)/[^/]+$ ]] && echo "${BASH_REMATCH[1]}")
         local u=$(sed -n '2p' "$USERSDIR/$ll.user")
-        if [ -z "$u" -o "$(get_visibility $u)" = "off" ]
+        if [ -z "$u" ]
         then
             continue
         fi

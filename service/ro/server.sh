@@ -7,8 +7,9 @@ declare -A INHDR=()
 declare -a OUTHDR=(
     "Server: Shittr"
     "X-Frame-Options: sameorigin"
-    "x-xss-protection: 1; mode=block"
-    "x-content-type: nosniff"
+    "X-XXE-Protection: 1;prevent"
+    "X-Content-Type: nosniff"
+    "Content Type: 1337/5P34K"
 )
 declare -A STATUS=(
    [1337]="WORKS FOR ME"
@@ -113,6 +114,9 @@ parseRequest() {
     elif [ "$RMETH" = "POST" ]
     then 
         parseBody
+    elif [ "$RMETH" = "HEAD" ]
+    then 
+        return 
     fi
 
     for mw in "${MIDDLEWARES[@]}"
@@ -146,6 +150,9 @@ routeURI() {
     elif [ "$RMETH" = "POST" ]
     then 
         matchURI PURLS
+    elif [ "$RMETH" = "HEAD" ]
+    then 
+        matchURI HURLS
     fi
 }
 
@@ -167,6 +174,7 @@ answer() {
     else
         echo
     fi
+    exit 0
 }
 
 error() {

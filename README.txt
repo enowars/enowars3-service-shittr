@@ -1,6 +1,6 @@
 # BASHOR SERVICE
 
-VULNS:
+# VULNS:
 
 - GET.sh, function g_static: File includsion should be possible
 - db.sh, function get_user: Path traversal with cookie value (exploitable?)
@@ -12,6 +12,22 @@ VULNS:
 - Shits are encrypted using a 16 byte ECB AES! => Recover the key, get all shits and fine. (Same initial key for all teams :D)
 - No follow restriction limit in GET.sh (g_follow_shittr), because followCnt does not exist (should be follow_cnt)
 
+# CONFIRMED VULNS
+
+## Visibility Bypass 1
+- Viewing a 'private' user's profile and shits is possible at /@<userid>
+- The attacker cannot see private user's shits on /diarrhea or /shittrs
+- The attacker can, however, see those accounts mentioned in shits OR through an account B that the hidden user is following (B's following shittr list)
+- FIX: Prohibit access to hidden user's profiles
+- TODO: Checker implementation
+
+## Visibility Bypass 2
+- Viewing a hidden user's shits is possible at /tag/<tag>
+- The attacker could guess the hashtags #flag or #enowars and monitor those for shits from the gamebot with a flag
+- FIX: Filter hidden user's shits from the hashtag
+- TODO: Checker implementation
+
+# Ideas
 - I'll probably add some subtle RCE
 - Maybe some SQL or Template injection or so (?)
 - Maybe some debug options that leak flags?
