@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-a-bash-variable
+# https://stackoverflow.com/a/1683850/8957548
 trim() {
     local var="$*"
     # remove leading whitespace characters
@@ -27,8 +27,19 @@ get_cookie() {
     done
 }
 
-# https://stackoverflow.com/questions/6250698/how-to-decode-url-encoded-string-in-shell
+# https://stackoverflow.com/a/37840948/8957548
 urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 
-# https://stackoverflow.com/questions/1527049/how-can-i-join-elements-of-an-array-in-bash
+# https://stackoverflow.com/a/17841619/8957548
 join_by() { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
+
+# https://stackoverflow.com/a/11454477/8957548
+enc() {
+    read -r data
+    echo "$data" | openssl enc -e -aes-128-ecb -nosalt -A -K $(cat "$ENCKEY") -a 2>/dev/null
+}
+
+dec() {
+    read -r data
+    echo "$data" | openssl enc -d -aes-128-ecb -nosalt -A -K $(cat "$ENCKEY") -a 2>/dev/null
+}

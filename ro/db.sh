@@ -92,7 +92,7 @@ follower_cnt() {
 }
 
 create_shit() {
-    local s=$(echo "$2" | base64)
+    local s=$(echo "$2" | base64 | enc | base64 -w 0)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
     local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
@@ -129,7 +129,7 @@ fluid_diarrhea() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
-        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1 | base64 -d)
+        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1 | base64 -d | dec | base64 -d)
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
@@ -145,7 +145,7 @@ get_tag() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
-        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1 | base64 -d)
+        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1 | base64 -d | dec | base64 -d)
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
