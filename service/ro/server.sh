@@ -21,7 +21,7 @@ declare -A PARAMS=()
 declare -A TPLPARAMS=()
 
 debug() {
-    echo "$(date), $SOCAT_PEERADDR $@" >&2
+    echo "$(date), $SOCAT_PEERADDR $@" | tee -a "$LOGPATH" >&2
 }
 addOutHdr() {
     OUTHDR+=("$1: $2")

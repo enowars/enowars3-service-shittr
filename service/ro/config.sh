@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DBDIR="../rw/db"
+RWDIR="../rw"
+DBDIR="$RWDIR/db"
 SESSIONSDIR="$DBDIR/sessions"
 USERSDIR="$DBDIR/users"
 SHITSDIR="$DBDIR/shitposts"
@@ -11,8 +12,11 @@ STATICDIR="./static"
 TEMPLATESDIR="./templates"
 
 ENCKEY="$STATICDIR/enc.key"
+LOGDIR="$RWDIR/logs"
+LOGPATH="$LOGDIR/shittr.log"
 
 mkdir -p "$SESSIONSDIR" "$USERSDIR" "$STATICDIR" "$TEMPLATESDIR" "$SHITSDIR" "$FOLLOWERSDIR" "$HASHTAGSDIR"
+mkdir -p "$LOGDIR"
 
 if [ ! -f "$ENCKEY" ]
 then

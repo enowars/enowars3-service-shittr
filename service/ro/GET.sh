@@ -44,7 +44,6 @@ g_shittrs() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
 
     declare -a SHITTRS=();
     while read l
@@ -57,20 +56,19 @@ g_shittrs() {
         SHITTRS+=("$u")
     done < <(find "$USERSDIR" -type f -name '*.user')
 
-    answer 1337 "$(addTplParam 'TITLE' 'Shittrs'; addTplParam 'USERNAME' "$user"; render 'shittrs.sh')";
+    answer 1337 "$(addTplParam 'TITLE' 'Shittrs'; addTplParam 'USERNAME' "$USER"; render 'shittrs.sh')";
 }
 
 g_shittr() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
     local bio=$(get_bio "$OUSER")
     local fc=$(follow_cnt "$OUSER")
     local fec=$(follower_cnt "$OUSER")
-    local if=$(is_following "$user" "$OUSER")
+    local if=$(is_following "$USER" "$OUSER")
     local u=$(echo "$OUSER" | md5sum | cut -d ' ' -f 1)
 
     declare -a SHITS=()
@@ -83,22 +81,21 @@ g_shittr() {
         SHITS+=("$s")
     done < <(last_shits "$OUSER" 25)
 
-    answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$user"; render 'shittr.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$USER"; render 'shittr.sh')";
 }
 
 g_follow_shittr() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
-    if [ $(followCnt "$user") -gt 25 ]
+    if [ $(followCnt "$USER") -gt 25 ]
     then
         error "This is a demo. Too many followers!"
     fi
 
-    follow_shittr "$user" "$OUSER"
+    follow_shittr "$USER" "$OUSER"
 
     redirect "/@${OUSER}"
 }
@@ -121,12 +118,12 @@ g_settings() {
     fi
     local user=$(get_user "$(get_cookie 'auth')")
     local p=$(get_visibility "$user")
-    local b=$(get_bio "$user")
+    local b=$(get_bio "$USER")
 
     answer 1337 "$(addTplParam 'TITLE' "Settings"; 
                     addTplParam 'isp' "$p"; 
                     addTplParam 'bio' "$b";
-                    addTplParam 'USERNAME' "$user"; 
+                    addTplParam 'USERNAME' "$USER"; 
                     render 'settings.sh')";
 }
 
@@ -134,12 +131,11 @@ g_tag(){
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
     local tag="${BASH_REMATCH[1]}"
 
     get_tag "$tag" "25"
 
-    answer 1337 "$(addTplParam 'TITLE' "Tag ${tag}"; addTplParam "TAG" "$tag"; addTplParam 'USERNAME' "$user"; render 'tag.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Tag ${tag}"; addTplParam "TAG" "$tag"; addTplParam 'USERNAME' "$USER"; render 'tag.sh')";
 }
 
 g_static() {
@@ -162,11 +158,10 @@ g_diarrhea() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
 
-    fluid_diarrhea "$user" "25"
+    fluid_diarrhea "$USER" "25"
 
-    answer 1337 "$(addTplParam 'TITLE' "Diarrhea";  addTplParam 'USERNAME' "$user"; render 'diarrhea.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Diarrhea";  addTplParam 'USERNAME' "$USER"; render 'diarrhea.sh')";
 }
 
 g_shit() {
@@ -181,20 +176,19 @@ g_shittr_following() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
 
     get_following "$OUSER"
 
-    answer 1337 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$user"; render 'following.sh')";
+    answer 1337 "$(addTplParam 'TITLE' "Whom is @$OUSER following"; addTplParam 'USERNAME' "$USER"; render 'following.sh')";
 }
 
 g_shittr_followers() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
         redirect "/login"
     fi
-    local user=$(get_user "$(get_cookie 'auth')")
     local OUSER="${BASH_REMATCH[1]}"
+    local user="$USER"
 
     get_followers "$OUSER"
 

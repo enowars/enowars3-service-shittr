@@ -1,0 +1,4 @@
+rw/db/
+ro/static/*.key
+ro/static/*.crt
+ro/static/*.pem

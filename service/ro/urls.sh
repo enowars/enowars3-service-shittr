@@ -4,6 +4,7 @@ source middlewares.sh
 
 declare -a MIDDLEWARES=(
     is_authenticated
+    get_request_user
 )
 
 declare -A PURLS=(

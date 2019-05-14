@@ -1,0 +1,19 @@
+version: '2.1'
+services:
+  shittr:
+    build: . 
+    volumes:
+            - ./ro:/service/ro:ro
+            - ./rw:/service/rw
+    networks:
+      shittr_network:
+        ipv6_address: fd00:1337:TEAMID:8454::1
+    restart: unless-stopped
+networks:
+  shittr_network:
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: fd00:1337:TEAMID:8454::/64
+          gateway: fd00:1337:TEAMID:8454::ffff
