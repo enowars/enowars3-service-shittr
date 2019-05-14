@@ -28,7 +28,7 @@
 - TODO: Checker implementation
 
 ## Visibility Bypass 3
-- If one unfollow's himself, then the matching ids-Array in db.sh (fluid_diarrhea) is (), which matches all entries and therefore all shits are displayed.
+- If one unfollows himself, then the matching ids-Array in db.sh (fluid_diarrhea) is (), which matches all entries and therefore all shits are displayed.
 
 ## Info leak 1
 - Directory listing is enabled for /static/, or folders in general

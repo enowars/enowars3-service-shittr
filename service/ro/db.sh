@@ -9,6 +9,7 @@ create_user() {
     echo "$1" >> "$USERSDIR/$id.user"
     echo "Public=on" >> "$USERSDIR/$id.user"
     echo "Bio=SGVsbG8sIEknbSBhIHNoaXR0ciE=" >> "$USERSDIR/$id.user"
+    follow_shittr "$1" "$1"
     return 0
 }
 
