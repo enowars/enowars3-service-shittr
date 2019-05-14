@@ -13,3 +13,4 @@ is_authenticated() {
 get_request_user() {
     USER=$(get_user "$(get_cookie 'auth')")
 }
+

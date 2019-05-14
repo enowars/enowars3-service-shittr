@@ -27,14 +27,26 @@
 - FIX: Filter hidden user's shits from the hashtag
 - TODO: Checker implementation
 
+## Info leak 1
+- Directory listing is enabled for /static/, or folders in general
+
+## Info leak 2
+- HEAD requests can be used to check if folders or files exist
+
+## Info leak 3
+- The HEAD.sh contains a regex that matches against $DEBUG and will happily give away the last 500 lines of debug log. (even if DEBUG=0, bc an URL with a '0' will match)
+- The attacker can obtain flags
+- FIX: Remove the debug log retrieval in HEAD.sh
+
 # Ideas
 - I'll probably add some subtle RCE
 - Maybe some SQL or Template injection or so (?)
 - Maybe some debug options that leak flags?
 
-- Statuscode ist Stunden seit EPOCH Module $realStatuscode
-- Implement that if two people are following each other, they see their shits
 - Implement rendering of images (+SSRF)
-- Implement debug/error log
 - Implement Auth bypass (e.g. debug)
-- Show public accounts/shits on the diarrhea page only if public was chosen => Hide non-public shits
+- Implement Download of own shits
+- Patch openssl Parameters => algo is -enowars instead of -aes-128-ecb
+- Have a look at the cookie-Path traversal and/or others
+- (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
+- (?) Implement that if two people are following each other, they see their shits

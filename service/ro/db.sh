@@ -129,7 +129,6 @@ fluid_diarrhea() {
     while read l;
     do
         local ll=$(basename "$l" | sed -e 's/\.follower//g')
-        debug "GREEEEEP $(grep 'Public=off' "$USERSDIR/$ll.user")"
         if grep -q 'Public=off' "$USERSDIR/$ll.user";
         then
             continue

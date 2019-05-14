@@ -23,3 +23,5 @@ if [ ! -f "$ENCKEY" ]
 then
     hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random > "$ENCKEY"
 fi
+
+DEBUG=1
