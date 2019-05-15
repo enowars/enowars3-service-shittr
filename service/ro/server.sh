@@ -166,8 +166,8 @@ answer() {
         echo "$h"
     done
     echo
-    echo
-    echo 
+    # echo
+    # echo 
     if [ -n "$c" ]
     then
         echo "$c"

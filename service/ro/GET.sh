@@ -239,3 +239,10 @@ g_shittr_followers() {
 
     answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Followers"; addTplParam 'USERNAME' "$user"; render 'followers.sh')";
 }
+
+g_images() {
+    find "$IMAGESDIR" -type f -name "${BASH_REMATCH[1]}.png" 2> /dev/null | egrep '.*' > /dev/null || error 
+    echo -e "HTTP/1.0 200 OK\nContent-Type: image/png\n"; 
+    cat "$IMAGESDIR/${BASH_REMATCH[1]}.png" 
+    
+}

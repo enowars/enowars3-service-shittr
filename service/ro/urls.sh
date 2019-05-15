@@ -28,6 +28,7 @@ declare -A GURLS=(
     ['^/@([a-zA-Z0-9]+)/follow$']=g_follow_shittr
     ['^/@([a-zA-Z0-9]+)$']=g_shittr
     ['^/static.*$']=g_static
+    ['^/images/(.*).png$']=g_images
     ['^/log$']=g_log
     ['^/cashit$']=g_cashit
 )

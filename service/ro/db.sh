@@ -9,6 +9,7 @@ create_user() {
     echo "$1" >> "$USERSDIR/$id.user"
     echo "Public=on" >> "$USERSDIR/$id.user"
     echo "Bio=SGVsbG8sIEknbSBhIHNoaXR0ciE=" >> "$USERSDIR/$id.user"
+    echo "Admin=0" >> "$USERSDIR/$id.user"
     follow_shittr "$1" "$1"
     return 0
 }
@@ -20,6 +21,12 @@ user_exists() {
 valid_login() {
     local dbpw=$(cat "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" | head -n 1)
     local sendpw=$(echo "$2" | sha256sum | cut -d' ' -f 1)
+
+    if grep -qoP "Admin=1" "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user"; then 
+        ADMIN=1
+    fi
+
+    debug "IS AAAADMIN IS $ADMIN"
 
     [ "$dbpw" = "$sendpw" ]
 }
@@ -108,7 +115,17 @@ follower_cnt() {
 }
 
 create_shit() {
-    local s=$(echo "$2" | base64 | enc | base64 -w 0)
+    local s="$2"
+    while read l
+    do
+        [[ ! "$l" =~ .png ]] && continue
+        local f="$(echo "$l" | rev | cut -d / -f 1 | rev )"
+        local p=$(urldecode "$IMAGESDIR/$f")
+        curl --silent -k "$l" -o "$p"
+        s=$(echo $(urldecode "$s") | sed -e 's|'"$l"'|<img src="/images/'"$f"'">|g')
+        s=$(urlencode "$s")
+    done < <(echo $(urldecode "$s") |grep -oP 'http.?://[\S\[\]:]+' | head -n 1)
+    local s=$(echo "$s" | base64 -w 0 | enc | base64 -w 0)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
     local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
@@ -119,7 +136,6 @@ create_shit() {
 
     echo $(urldecode "$2") |grep -oP '(#[A-Za-z0-9]+)' | while read h
     do
-        debug "TAGTAGTAGTAG $h / $u & $i"
         create_tag "$h" "$u:$i"
     done
 }

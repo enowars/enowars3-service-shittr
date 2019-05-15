@@ -47,20 +47,25 @@
 - If the user is an admin, GET /log will display the last 100 entries for the requesting IP address
 - FIX: None (only allow admins to become admins!)
 
-## ADMIN BYPASS
+## ADMIN BYPASS 1
 - Register a user name that matches /admin/ 
 - The is_admin middle checks $DEBUG for it's string length (-n), so it will always be true for DEBUG=0 and DEBUG=1 
 - The attacker can therefore gain "ADMIN=1" easily
 - With that, the attacker can view /diarrhea and /shittrs or hidden user's without restrictions
 - FIX: Remove "-n" in the is_admin middleware
 
+## ADMIN BYPASS 2
+- Use the "image-in-tweet" functionality to write a user file to ./users/<md5>.user with Admin=1
+- This can be achieved by an attacker by abusing the create_shit() function in db.sh. The regex will match arbitrary paths that contain ".png", e.g. /.png/foo.user would work. The cut -d'/' check can be bypassed, because the final file path is urldecoded again (thus using ..%2f) works.
+- FIX: Remove the urldecode on the file path and/or fix the regex to only allow .png files
+- TODO: Maybe 
+
 # Ideas
 - I'll probably add some subtle RCE
 - Maybe some SQL or Template injection or so (?)
 - Maybe some debug options that leak flags?
 
-- Implement rendering of images (+SSRF)
-- Implement Download of own shits
+- Implement Download of own shits => use crypto attack to restore key
 - Patch openssl Parameters => algo is -enowars instead of -aes-128-ecb
 - Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header

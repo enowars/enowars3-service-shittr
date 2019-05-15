@@ -30,6 +30,21 @@ get_cookie() {
 # https://stackoverflow.com/a/37840948/8957548
 urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 
+# https://gist.github.com/cdown/1163649
+urlencode() {
+    # urlencode <string>
+
+    local length="${#1}"
+    for (( i = 0; i < length; i++ )); do
+        local c="${1:i:1}"
+        case $c in
+            [a-zA-Z0-9.~_-]) printf "$c" ;;
+            *) printf '%s' "$c" | xxd -p -c1 |
+                   while read c; do printf '%%%s' "$c"; done ;;
+        esac
+    done
+}
+
 # https://stackoverflow.com/a/17841619/8957548
 join_by() { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
 
