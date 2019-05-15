@@ -53,7 +53,7 @@ p_login() {
 
     local cookie="$(generate_session $username)"
 
-    addOutHdr "Set-Cookie" "auth=$cookie"
+    addOutHdr "Set-Cookie" "auth=$cookie;max-age=300"
 
     addMsg "success" "Successfully logged in as @$username!"
 
