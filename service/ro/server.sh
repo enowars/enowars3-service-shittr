@@ -187,7 +187,7 @@ error() {
     exit 1
 }
 
-render() {
+doRender() {
     local t="$1"
     if [ ! -f "./templates/$t" ]
     then
@@ -204,6 +204,31 @@ render() {
         r="$v"
     done
     source "./templates/$t"
+}
+
+clearUserCache() {
+    find "$CACHEDIR" -type f -iname "*-$1.cache" -delete
+}
+
+clearPageCache() {
+    find "$CACHEDIR" -type f -iname "$1-*.cache" -delete
+}
+
+render() {
+    if [ 1 -eq $CACHE -a -z "$NOCACHE" ]
+    then
+        local c="${FUNCNAME[1]}"
+        local r="$(doRender $*)"
+        if [ ! "$c" = "source" ]
+        then
+            local u=$(([ -n "$USER" ] && echo "$USER" || echo "anonymous") | md5sum | cut -d' ' -f 1)
+            echo "$r" | tee "$CACHEDIR/$c-$u.cache"
+        else
+            echo "$r"
+        fi
+    else
+        doRender $*
+    fi
 }
 
 includeTpl() {

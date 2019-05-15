@@ -23,8 +23,23 @@ is_admin() {
     fi
 }
 
+cache() {
+    local u=$(([ -n "$USER" ] && echo "$USER" || echo "anonymous") | md5sum | cut -d' ' -f 1)
+    if [ $CACHE -eq 1 -a "$RMETH" = "GET" ]
+    then
+        for r in "${!GURLS[@]}"
+        do
+            [[  -n "$r" && "$RURL" =~ $r && -f "$CACHEDIR/${GURLS[$r]}-$u.cache" ]] && answer 31337 "$(cat "$CACHEDIR/${GURLS[$r]}-$u.cache")"
+        done
+    else
+        NOCACHE=1
+        clearUserCache "$u"
+    fi
+}
+
 declare -a MIDDLEWARES=(
     is_authenticated
     get_request_user
     is_admin
+    cache
 )

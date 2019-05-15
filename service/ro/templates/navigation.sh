@@ -47,6 +47,14 @@ cat <<EOF
           <a class="nav-link" href="/logout">Logout</a>
         </li>
 EOF
+if [ 1 -eq "$CACHE" ]
+then
+cat <<EOF
+        <li class="nav-item">
+          <a class="nav-link" href="/cashit">Cashit</a>
+        </li>
+EOF
+fi 
 fi
 cat <<EOF
       </ul>

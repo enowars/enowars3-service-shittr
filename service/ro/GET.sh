@@ -105,6 +105,9 @@ g_follow_shittr() {
     follow_shittr "$USER" "$OUSER"
     addMsg "success" "You're following @$OUSER now!"
 
+    clearPageCache "g_shittr"
+    clearPageCache "g_shittr_following"
+    clearPageCache "g_shittr_followers"
     redirect "/@${OUSER}"
 }
 
@@ -120,10 +123,14 @@ g_unfollow_shittr() {
 
     addMsg "success" "You're not following @$OUSER anymore!"
 
+    clearPageCache "g_shittr"
+    clearPageCache "g_shittr_following"
+    clearPageCache "g_shittr_followers"
     redirect "/@${OUSER}"
 }
 
 g_settings() {
+    NOCACHE=1
     if [ ! $AUTHENTICATED -eq 1 ]; then
         addMsg "error" "You are not logged in!"
         redirect "/login"
@@ -139,7 +146,15 @@ g_settings() {
                     render 'settings.sh')";
 }
 
+g_cashit() {
+    local u="$(echo "$USER" | md5sum | cut -d' ' -f 1)"
+    clearUserCache "$u"
+
+    redirect "/"
+}
+
 g_tag(){
+    NOCACHE=1
     if [ ! $AUTHENTICATED -eq 1 ]; then
         addMsg "error" "You are not logged in!"
         redirect "/login"
@@ -152,16 +167,18 @@ g_tag(){
 }
 
 g_static() {
+    addOutHdr "Expires" "$(date -d "$(date +"%a, %d %b %Y %H:%M:%S %Z") +5 min" +"%a, %d %b %Y %H:%M:%S %Z")"
+    addOutHdr "Cache-Control" "max-age=300"
     if [[ "$RURL" =~ ".." ]]
     then
         error
     fi
     if [ -f "./$RURL" ]
     then
-        cat "./$RURL"
+        answer 200 "$(cat "./$RURL")"
     elif [ -d "./$RURL" ]
     then
-        ls -lha "./$RURL"
+        answer 200 "$(ls -lha "./$RURL")"
     else
         answer 404 "GTFO"
     fi
@@ -179,6 +196,7 @@ g_diarrhea() {
 }
 
 g_shit() {
+    NOCACHE=1
     if [ $AUTHENTICATED -eq 0 ]; then
         addMsg "error" "You are not logged in!"
         redirect "/login"
@@ -200,6 +218,7 @@ g_shittr_following() {
 }
 
 g_log() {
+    NOCACHE=1
     if [ "$ADMIN" -eq 1 ]
     then
         answer 1337 "$(tac "$LOGPATH" | grep "$SOCAT_PEERADDR" | head -n 100)"

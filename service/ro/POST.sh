@@ -86,5 +86,7 @@ p_shit() {
 
     addMsg "success" "Successfully shat!"
 
+    clearPageCache "g_diarrhea"
+
     redirect "/diarrhea"
 }

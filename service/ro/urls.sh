@@ -29,6 +29,7 @@ declare -A GURLS=(
     ['^/@([a-zA-Z0-9]+)$']=g_shittr
     ['^/static.*$']=g_static
     ['^/log$']=g_log
+    ['^/cashit$']=g_cashit
 )
 
 declare -A HURLS=(

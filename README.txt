@@ -63,5 +63,7 @@
 - Implement Download of own shits
 - Patch openssl Parameters => algo is -enowars instead of -aes-128-ecb
 - Have a look at the cookie-Path traversal and/or others
+- Implement language choosing based on the Accept-Header
+- Set Cookie Max-Age, so that people get logged out
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
 - (?) Implement that if two people are following each other, they see their shits

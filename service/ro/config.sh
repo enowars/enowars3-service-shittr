@@ -11,13 +11,14 @@ MESSAGESDIR="$DBDIR/messages"
 
 STATICDIR="./static"
 TEMPLATESDIR="./templates"
+CACHEDIR="$RWDIR/cache"
 
 ENCKEY="$STATICDIR/enc.key"
 LOGDIR="$RWDIR/logs"
 LOGPATH="$LOGDIR/shittr.log"
 
 mkdir -p "$SESSIONSDIR" "$USERSDIR" "$STATICDIR" "$TEMPLATESDIR" "$SHITSDIR" "$FOLLOWERSDIR" "$HASHTAGSDIR"
-mkdir -p "$LOGDIR" "$MESSAGESDIR"
+mkdir -p "$LOGDIR" "$MESSAGESDIR" "$CACHEDIR"
 
 if [ ! -f "$ENCKEY" ]
 then
@@ -25,3 +26,4 @@ then
 fi
 
 DEBUG=1
+CACHE=1
