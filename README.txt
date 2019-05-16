@@ -60,14 +60,27 @@
 - FIX: Remove the urldecode on the file path and/or fix the regex to only allow .png files
 - TODO: Maybe 
 
+## Crypto 1
+- The server.sh includes /bin/ in the PATH, so that the our "shit/openssl" tool is called instead of openssl in utils.sh
+- Uses simple ECB with the first 16 bytes as the key from enc.key to encrypt shits.
+- Shits can be downloaded from /settings, so one can obtained plaintext + ciphertext pairs to recover the key.
+- The key can then be used to ????? (decrypt other people's shits?)
+- FIX: Use more than 16 bytes and/or other crypto algorithm
+
+## RCE 1
+- The p_downloadshit function creates a tar archive with unquoted expansion * 
+- This might (?!) result in a vulnerability like RCE
+- FIX: Make tar secure
+
 # Ideas
 - I'll probably add some subtle RCE
 - Maybe some SQL or Template injection or so (?)
 - Maybe some debug options that leak flags?
 
-- Implement Download of own shits => use crypto attack to restore key
-- Patch openssl Parameters => algo is -enowars instead of -aes-128-ecb
+- Bild-Fetcher nochmal debuggen, ob nicht file://etc/passwd#test.png oder so geht. Redirect von HTTP ist in libcurl deaktiviert
+- Implement Download of own shits => use crypto attack to restore key / but what then?
 - Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header
+- Implement answering to shits
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
 - (?) Implement that if two people are following each other, they see their shits

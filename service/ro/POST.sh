@@ -82,6 +82,11 @@ p_shit() {
     fi
     local user=$(get_user "$(get_cookie 'auth')")
 
+    if [ ${#PARAMS[post]} -gt 300 ]
+    then
+        error "Message too long"
+    fi
+
     create_shit "$user" "${PARAMS[post]}"
 
     addMsg "success" "Successfully shat!"
@@ -89,4 +94,16 @@ p_shit() {
     clearPageCache "g_diarrhea"
 
     redirect "/diarrhea"
+}
+
+p_download() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
+        redirect "/login"
+    fi
+
+    echo -e "HTTP/1.0 200 OK\nContent-Type: application/octet-stream\nContent-Disposition: attachment; filename=shits.tar\n"; 
+
+    packShit
+
 }

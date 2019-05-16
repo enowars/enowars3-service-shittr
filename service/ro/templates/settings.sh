@@ -20,6 +20,10 @@ $(render navigation.sh)
             <br>
             <input type='submit' name='submit'>
         </form>
+        <form method="POST" action='/download'>
+            <p>DSGVO sucks, but we don't give a shit about your data anyway..</p>
+            <input type='submit' value='Download shits!' name='downloadshits'>
+        </form>
       </div>
 
     </main><!-- /.container -->

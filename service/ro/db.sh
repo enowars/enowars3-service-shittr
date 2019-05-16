@@ -18,6 +18,11 @@ user_exists() {
     [ -f "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" ]
 }
 
+packShit() {
+    local up="$SHITSDIR/$(echo "$USER" | md5sum | cut -d ' ' -f 1)"
+    cd "$up" && tar cf - *
+}
+
 valid_login() {
     local dbpw=$(cat "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user" | head -n 1)
     local sendpw=$(echo "$2" | sha256sum | cut -d' ' -f 1)
@@ -25,8 +30,6 @@ valid_login() {
     if grep -qoP "Admin=1" "$USERSDIR/$(echo $1 | md5sum | cut -d ' ' -f 1).user"; then 
         ADMIN=1
     fi
-
-    debug "IS AAAADMIN IS $ADMIN"
 
     [ "$dbpw" = "$sendpw" ]
 }
@@ -124,7 +127,7 @@ create_shit() {
         curl --silent -k "$l" -o "$p"
         s=$(echo $(urldecode "$s") | sed -e 's|'"$l"'|<img src="/images/'"$f"'">|g')
         s=$(urlencode "$s")
-    done < <(echo $(urldecode "$s") |grep -oP 'http.?://[\S\[\]:]+' | head -n 1)
+    done < <(echo $(urldecode "$s") |grep -oP '(http.?)?://[\S\[\]:.png]+' | head -n 1)
     local s=$(echo "$s" | base64 -w 0 | enc | base64 -w 0)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
     local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)

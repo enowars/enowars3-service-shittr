@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH="$(pwd)/bin:$PATH"
 
 source urls.sh
 source utils.sh

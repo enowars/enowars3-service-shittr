@@ -8,6 +8,7 @@ declare -A PURLS=(
     ['^/login$']=p_login
     ['^/settings$']=p_settings
     ['^/shit$']=p_shit
+    ['^/download$']=p_download
 )
 
 declare -A GURLS=(

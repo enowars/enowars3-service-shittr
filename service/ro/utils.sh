@@ -51,10 +51,10 @@ join_by() { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
 # https://stackoverflow.com/a/11454477/8957548
 enc() {
     read -r data
-    echo "$data" | openssl enc -e -aes-128-ecb -nosalt -A -K $(cat "$ENCKEY") -a 2>/dev/null
+    echo "$data" | openssl enc -e -aes-256-ofb -K $(cat "$ENCKEY") 2>/dev/null | base64 -w 0
 }
 
 dec() {
     read -r data
-    echo "$data" | openssl enc -d -aes-128-ecb -nosalt -A -K $(cat "$ENCKEY") -a 2>/dev/null
+    echo "$data" | base64 -d | openssl enc -d -aes-256-ofb -K $(cat "$ENCKEY") 2>/dev/null
 }
