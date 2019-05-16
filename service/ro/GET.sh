@@ -87,7 +87,8 @@ g_shittr() {
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-        SHITS+=("$s")
+        local u=$(sed -n '2p' "$USERSDIR/$u.user")
+        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$u$q.shit'>Link</a> | $(like_url "$u$q"))")
     done < <(last_shits "$OUSER" 25)
 
     answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$USER"; render 'shittr.sh')";
@@ -248,4 +249,38 @@ g_images() {
     echo -e "HTTP/1.0 200 OK\nContent-Type: image/png\n"; 
     cat "$IMAGESDIR/${BASH_REMATCH[1]}.png" 
     
+}
+
+g_vshit() {
+    if [ ! $AUTHENTICATED -eq 1 ]; then
+        addMsg "error" "You are not logged in!"
+        redirect "/login"
+    fi
+    local us="${BASH_REMATCH[1]}"
+    local ui="${us:0:32}"
+    local si="${us:32:96}"
+
+    local s=$(cat "$SHITSDIR/$ui/$si.shit" | head -n 1)
+    if grep -qoP 'Private=0' "$SHITSDIR/$ui/$si.shit"; then
+        s=$(echo "$s" | base64 -d | dec | base64 -d)
+    fi
+    s=$(urldecode "$s")
+    s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
+    s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
+    local u=$(sed -n '2p' "$USERSDIR/$ui.user")
+    SHIT="<a href='/@$u'>@$u</a>: $s ($(like_url "$ui" "$si"))"
+
+    answer 1337 "$(addTplParam 'TITLE' "Shit";  addTplParam 'USERNAME' "$USER"; render 'vshit.sh')";
+}
+
+g_like_shit() {
+    if [ ! $AUTHENTICATED -gt 0 ]; then
+        addMsg "error" "You are not logged in!"
+        redirect "/login"
+    fi
+
+    like_shit "${BASH_REMATCH[1]}"
+
+    clearPageCache "g_vshit"
+    redirect "/${BASH_REMATCH[1]}.shit"
 }

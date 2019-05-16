@@ -32,6 +32,8 @@ declare -A GURLS=(
     ['^/images/(.*).png$']=g_images
     ['^/log$']=g_log
     ['^/cashit$']=g_cashit
+    ['^/([a-z0-9]{96}).shit$']=g_vshit
+    ['^/([a-z0-9]{96}).shit/like$']=g_like_shit
 )
 
 declare -A HURLS=(

@@ -136,7 +136,7 @@ create_shit() {
     echo "$s" > "$SHITSDIR/$u/$i.shit"
     echo "Private=$p" >> "$SHITSDIR/$u/$i.shit"
     echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
-    echo "$u:$i.shit" >> "$SHITSDIR/diarrhea.log"
+    echo "$u:$i" >> "$SHITSDIR/diarrhea.log"
 
 
     echo $(urldecode "$2") |grep -oP '(#[A-Za-z0-9]+)' | while read h
@@ -169,15 +169,15 @@ fluid_diarrhea() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
-        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1)
-        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid"; then
+        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1)
+        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit"; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
-        SHITS+=("<a href='/@$u'>@$u</a>: $s")
+        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$uid$sid.shit'>Link</a> | $(like_url "$uid$sid"))")
     done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)"  2>/dev/null | head -n "$2")
 }
 
@@ -196,7 +196,7 @@ get_tag() {
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
-        SHITS+=("<a href='/@$u'>@$u</a>: $s")
+        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$uid$sid.shit'>Link</a> | $(like_url "$uid$sid")")
     done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag"  2>/dev/null | head -n "$2")
 }
 
@@ -231,4 +231,20 @@ get_following() {
         fi
         FOLLOWING+=("$u")
     done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower' 2>/dev/null)
+}
+
+like_shit() {
+    local ui="${1:0:32}"
+    local si="${1:32:96}"
+
+    mkdir -p "$LIKESDIR/$ui/$si"
+    touch "$LIKESDIR/$ui/$si/$(echo "$USER" | md5sum | cut -d ' ' -f 1).like"
+}
+
+like_cnt() {
+    find "$LIKESDIR/${1:0:32}/${1:32:96}" -type f -name "$(echo "$USER" | md5sum | cut -d ' ' -f 1).like" 2>/dev/null | wc -l
+}
+
+like_url() {
+    echo "$(like_cnt "$1$2") <a href='/$1$2.shit/like'>Like(s)</a>"
 }

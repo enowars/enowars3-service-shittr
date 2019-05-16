@@ -86,6 +86,5 @@
 - Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header
 - Implement answering to shits
-- Implement liking / retweeting shits
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
 - (?) Implement that if two people are following each other, they see their shits
