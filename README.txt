@@ -67,7 +67,12 @@
 - The key can then be used to ????? (decrypt other people's shits?)
 - FIX: Use more than 16 bytes and/or other crypto algorithm
 
-## RCE 1
+## RCE 2
+- The shitssl binary has 2 BOFs, of which one is exploitable by creating a file e.g. in the shitposts directory, which will be read and tried to decrypt by the binary.
+- If the base64 decoded strings is > 2048 bytes, then it will copy more than it's allowed into a buffer and result in an easy BOF
+- FIX: Patch binary and/or limit lengths
+
+## RCE 1 (?)
 - The p_downloadshit function creates a tar archive with unquoted expansion * 
 - This might (?!) result in a vulnerability like RCE
 - FIX: Make tar secure
@@ -82,5 +87,6 @@
 - Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header
 - Implement answering to shits
+- Implement liking / retweeting shits
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
 - (?) Implement that if two people are following each other, they see their shits
