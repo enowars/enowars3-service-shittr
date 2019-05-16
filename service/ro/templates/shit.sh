@@ -14,7 +14,9 @@ $(render navigation.sh)
         $(render messages.sh)
         <h1>Don't shit yourself...</h1>
         <form method="post">
-            <textarea name='post'>...shit on the others! https://cve.mitre.org/images/cvebanner.png</textarea>
+            <textarea name='post'>...shit on the others! </textarea>
+            <br>
+            <label for='private'>Private?</label><input type='checkbox' name='private'>
             <br>
             <input type='submit' name='submit'>
         </form>

@@ -119,6 +119,7 @@ follower_cnt() {
 
 create_shit() {
     local s="$2"
+    [[ "$3" =~ on ]] && local p="1" || local p="0"
     while read l
     do
         [[ ! "$l" =~ .png ]] && continue
@@ -133,6 +134,7 @@ create_shit() {
     local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
     echo "$s" > "$SHITSDIR/$u/$i.shit"
+    echo "Private=$p" >> "$SHITSDIR/$u/$i.shit"
     echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
     echo "$u:$i.shit" >> "$SHITSDIR/diarrhea.log"
 
@@ -167,7 +169,10 @@ fluid_diarrhea() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
-        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1 | base64 -d | dec | base64 -d)
+        local s=$(cat "$SHITSDIR/$uid/$sid" | head -n 1)
+        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid"; then
+            s=$(echo "$s" | base64 -d | dec | base64 -d)
+        fi
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
@@ -183,7 +188,10 @@ get_tag() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
-        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1 | base64 -d | dec | base64 -d)
+        local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1)
+        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit"; then
+            s=$(echo "$s" | base64 -d | dec | base64 -d)
+        fi
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')

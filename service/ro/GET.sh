@@ -80,7 +80,10 @@ g_shittr() {
     declare -a SHITS=()
     while read q
     do
-        local s=$(cat "./$SHITSDIR/$u/$q.shit" | head -n 1 | base64 -d | dec | base64 -d)
+        local s=$(cat "$SHITSDIR/$u/$q.shit" | head -n 1)
+        if grep -qoP 'Private=0' "$SHITSDIR/$u/$q.shit" || [[ "$USER" = "$OUSER" ]]; then
+            s=$(echo "$s" | base64 -d | dec | base64 -d)
+        fi
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')

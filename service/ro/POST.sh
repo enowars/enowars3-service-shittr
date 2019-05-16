@@ -87,7 +87,7 @@ p_shit() {
         error "Message too long"
     fi
 
-    create_shit "$user" "${PARAMS[post]}"
+    create_shit "$user" "${PARAMS[post]}" "${PARAMS[private]}"
 
     addMsg "success" "Successfully shat!"
 

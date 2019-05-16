@@ -64,7 +64,7 @@
 - The server.sh includes /bin/ in the PATH, so that the our "shit/openssl" tool is called instead of openssl in utils.sh
 - Uses simple ECB with the first 16 bytes as the key from enc.key to encrypt shits.
 - Shits can be downloaded from /settings, so one can obtained plaintext + ciphertext pairs to recover the key.
-- The key can then be used to ????? (decrypt other people's shits?)
+- The key can then be used to decrypt other people's private shits!
 - FIX: Use more than 16 bytes and/or other crypto algorithm
 
 ## RCE 2
@@ -83,7 +83,6 @@
 - Maybe some debug options that leak flags?
 
 - Bild-Fetcher nochmal debuggen, ob nicht file://etc/passwd#test.png oder so geht. Redirect von HTTP ist in libcurl deaktiviert
-- Implement Download of own shits => use crypto attack to restore key / but what then?
 - Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header
 - Implement answering to shits

@@ -27,4 +27,4 @@ then
 fi
 
 DEBUG=1
-CACHE=1
+CACHE=0
