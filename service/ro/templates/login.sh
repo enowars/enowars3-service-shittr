@@ -13,11 +13,23 @@ $(render navigation.sh)
       <div class="starter-template">
         $(render messages.sh)
         <h1>Login</h1>
-        <form method="POST">
-            <input type="text" name="username">
-            <input type="password" name="password">
-            <input type="submit" name="submit">
-        </form>
+        <div class="row">
+          <div class="col-lg-6 offset-lg-3">
+            <form method="POST">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username"  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password"  class="form-control">
+              </div>
+              <div class="form-group">
+                <button type="submit"  class="btn btn-primary">Login</button>
+              </div>
+              </form>
+          </div>
+        </div>
       </div>
 
     </main><!-- /.container -->

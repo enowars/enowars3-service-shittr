@@ -9,7 +9,7 @@ EOF
         local IFS=':'
         read -r t m <<< "$mm"
         m=$(base64 -d <<< "$m")
-        echo "<li class='$t'>$m</li>"
+        echo "<div class='alert alert-primary' role='alert'>$m</div>"
     done
 cat <<EOF
         </ul>

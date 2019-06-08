@@ -12,14 +12,23 @@ $(render navigation.sh)
 
       <div class="starter-template">
         $(render messages.sh)
-        <h1>Don't shit yourself...</h1>
-        <form method="post">
-            <textarea name='post'>...shit on the others! </textarea>
-            <br>
-            <label for='private'>Private?</label><input type='checkbox' name='private'>
-            <br>
-            <input type='submit' name='submit'>
-        </form>
+        <h1>Take a dump!</h1>
+        <div class="row">
+          <div class="col-lg-6 offset-lg-3">
+            <form method="post">
+              <div class="form-group">
+                <textarea name='post' class="form-control">... and shit on the others! </textarea>
+              </div>
+              <div class="form-group">
+                <input type='checkbox' name='private' class="form-check-input">
+                <label for='private' class="form-check-label">Private?</label>
+              </div>
+              <div class="form-group">
+                <button type="submit"  class="btn btn-primary">Shit!</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
 
     </main><!-- /.container -->

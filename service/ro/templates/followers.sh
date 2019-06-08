@@ -10,17 +10,28 @@ $(render navigation.sh)
 
     <main role="main" class="container">
 
-      <div class="starter-template">
+      <div class="">
         $(render messages.sh)
-        <h1>@${OUSER}'s followers</h1>
-        <ul>
+        <div class="row">
+          <div class="col-lg-3">
+            <h1>@${OUSER}</h1>
+          </div>
+          <div class="col-lg-9">
+            <h1>Followers</h1>
+            <table class="table table-dark table-striped table-hover"><tbody>
 EOF
     for s in "${FOLLOWERS[@]}";
     do
-        echo "<li><a href='/@${s}'>@${s}</a></li>";
+        cat <<EOF
+                  <tr>
+                    <td><a href='/@${s}'>@${s}</a></td>
+                  </tr>
+EOF
     done
 cat <<EOF
-        </ul>
+            </tbody></table>
+          </div>
+        </div>
       </div>
 
     </main><!-- /.container -->

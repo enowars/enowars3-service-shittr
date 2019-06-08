@@ -13,17 +13,30 @@ $(render navigation.sh)
       <div class="starter-template">
         $(render messages.sh)
         <h1>${TITLE}</h1>
-        <form method="POST">
-            <label for='public'>Public profile?</label><input type='checkbox' name='public' $( [ "on" = "$isp" ] && echo -n "checked='checked'")>
-            <br>
-            <label for="bio">Biography</label><textarea name='bio'>${bio}</textarea>
-            <br>
-            <input type='submit' name='submit'>
-        </form>
-        <form method="POST" action='/download'>
-            <p>DSGVO sucks, but we don't give a shit about your data anyway..</p>
-            <input type='submit' value='Download shits!' name='downloadshits'>
-        </form>
+        <div class="row">
+          <div class="col-lg-6 offset-lg-3">
+            <form method="POST">
+              <div class="form-group">
+                <input  class="form-check-input" type='checkbox' name='public' $( [ "on" = "$isp" ] && echo -n "checked='checked'")>
+                <label for='public' class="form-check-label">Public profile?</label>
+              </div>
+              <div class="form-group">
+                <label for="bio">Biography</label>
+                <textarea name='bio'  class="form-control">${bio}</textarea>
+              </div>
+              <div class="form-group">
+                <button type="submit"  class="btn btn-primary">Save</button>
+              </div>
+            </form>
+            <hr>
+            <form method="POST" action='/download'>
+              <p>GDPR sucks, but we don't give a shit about your data anyway..</p>
+              <div class="form-group">
+                <button type="submit"  name='downloadshits' class="btn btn-primary">Download shit!</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
 
     </main><!-- /.container -->

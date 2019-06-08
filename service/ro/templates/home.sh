@@ -13,7 +13,8 @@ $(render navigation.sh)
       <div class="starter-template">
         $(render messages.sh)
         <h1>Welcome back, @${USERNAME}!</h1>
-        <p class="lead">Lorem ipsum dolor sit...</p>
+        <p class="lead">...let's enjoy the shit show while the world is burning down and breaking apart!</p>
+        <p>Social media has destroyed our lives. Social media is dead. Long live social media!</p>
       </div>
 
     </main><!-- /.container -->

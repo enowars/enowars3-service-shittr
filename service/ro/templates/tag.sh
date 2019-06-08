@@ -10,17 +10,30 @@ $(render navigation.sh)
 
     <main role="main" class="container">
 
-      <div class="starter-template">
+      <div class="">
         $(render messages.sh)
-        <h1>Tag: ${TAG}</h1>
-        <ul>
+        <div class="row">
+          <div class="col-lg-3">
+            <h1>#${TAG}</h1>
+          </div>
+          <div class="col-lg-9">
+            <h1>Shits</h1>
+            <table class="table table-hover table-striped table-dark">
+            <tbody>
 EOF
         for s in "${SHITS[@]}"
         do 
-          echo "<p>${s}</p>"
+          cat <<EOF
+                <tr>
+                  <td>${s}</td>
+                </tr>
+EOF
         done
 cat <<EOF
-        </ul>
+          </tbody>
+          </table>
+          </div>
+        </div>
       </div>
 
     </main><!-- /.container -->

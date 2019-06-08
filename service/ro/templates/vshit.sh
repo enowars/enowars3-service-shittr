@@ -10,12 +10,16 @@ $(render navigation.sh)
 
     <main role="main" class="container">
 
-      <div class="starter-template">
+      <div class="">
         $(render messages.sh)
-        <h1>It takes one shit</h1>
-        <ul>
-          ${SHIT}
-        </ul>
+        <h1 style="text-align:center"">It takes one shit</h1>
+          <table class="table table-hover table-striped table-dark">
+          <tbody>
+            <tr>
+              <td>${SHIT}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </main><!-- /.container -->

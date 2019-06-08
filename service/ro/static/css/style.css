@@ -1,3 +1,30 @@
 body {
-    font-size: 2em;
+    background-color: black;
+    color: white;
+}
+
+.shittr {
+    background-color: grey;
+    padding: 0.5em;
+    font-size: 1.5em;
+}
+
+.shit .links {
+    border-top: 1px solid #aaa;
+}
+
+.shit .likecnt {
+    float: right;
+}
+
+.shit .content {
+    padding: 1em;
+}
+
+a {
+    color: #999;
+}
+
+a:hover {
+    color: #666;
 }

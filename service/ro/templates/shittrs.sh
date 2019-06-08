@@ -13,14 +13,20 @@ $(render navigation.sh)
       <div class="starter-template">
         $(render messages.sh)
         <h1>Here are your fellow shittrs, @${USERNAME}!</h1>
-        <ul>
+        <div class="row">
+          <div class="col-lg-6 offset-lg-3">
+            <table class="table table-dark table-striped table-hover"><tbody>
 EOF
     for s in "${SHITTRS[@]}";
     do
-        echo "<li><a href='/@${s}'>@${s}</a></li>";
+        cat <<EOF
+              <tr>
+                <td><a href='/@${s}'>@${s}</a></td>
+              </tr>
+EOF
     done
 cat <<EOF
-        </ul>
+        </div></div></tbody></table>
       </div>
 
     </main><!-- /.container -->

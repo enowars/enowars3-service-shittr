@@ -177,7 +177,7 @@ fluid_diarrhea() {
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
-        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$uid$sid.shit'>Link</a> | $(like_url "$uid$sid"))")
+        SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uid$sid.shit' class='viewlink'>View</a> $(like_url "$uid$sid")</div></div>")
     done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)"  2>/dev/null | head -n "$2")
 }
 
@@ -196,7 +196,7 @@ get_tag() {
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
-        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$uid$sid.shit'>Link</a> | $(like_url "$uid$sid")")
+        SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uid$sid.shit' class='viewlink'>View</a> $(like_url "$uid$sid")</div></div>")
     done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag"  2>/dev/null | head -n "$2")
 }
 
@@ -246,5 +246,5 @@ like_cnt() {
 }
 
 like_url() {
-    echo "$(like_cnt "$1$2") <a href='/$1$2.shit/like'>Like(s)</a>"
+    echo "<a href='/$1$2.shit/like' class='likecnt'>$(like_cnt "$1$2") Like(s)</a>"
 }

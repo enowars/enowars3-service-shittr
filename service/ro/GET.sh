@@ -23,7 +23,7 @@ g_login() {
 
 g_logout() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     logout "$(get_cookie 'auth')"
@@ -35,7 +35,7 @@ g_logout() {
 
 g_home() {
     if [ $AUTHENTICATED -eq 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -46,7 +46,7 @@ g_home() {
 
 g_shittrs() {
     if [ $AUTHENTICATED -eq 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
 
@@ -66,7 +66,7 @@ g_shittrs() {
 
 g_shittr() {
     if [ $AUTHENTICATED -lt 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -88,7 +88,7 @@ g_shittr() {
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$u.user")
-        SHITS+=("<a href='/@$u'>@$u</a>: $s (<a href='/$u$q.shit'>Link</a> | $(like_url "$u$q"))")
+        SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$u$s.shit' class='viewlink'>View</a> $(like_url "$u$s")</div></div>")
     done < <(last_shits "$OUSER" 25)
 
     answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$USER"; render 'shittr.sh')";
@@ -96,7 +96,7 @@ g_shittr() {
 
 g_follow_shittr() {
     if [ ! $AUTHENTICATED -gt 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -117,7 +117,7 @@ g_follow_shittr() {
 
 g_unfollow_shittr() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -136,7 +136,7 @@ g_unfollow_shittr() {
 g_settings() {
     NOCACHE=1
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -160,7 +160,7 @@ g_cashit() {
 g_tag(){
     NOCACHE=1
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local tag="${BASH_REMATCH[1]}"
@@ -190,7 +190,7 @@ g_static() {
 
 g_diarrhea() {
     if [ $AUTHENTICATED -eq 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
 
@@ -202,7 +202,7 @@ g_diarrhea() {
 g_shit() {
     NOCACHE=1
     if [ $AUTHENTICATED -eq 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -211,7 +211,7 @@ g_shit() {
 
 g_shittr_following() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -233,7 +233,7 @@ g_log() {
 
 g_shittr_followers() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local OUSER="${BASH_REMATCH[1]}"
@@ -253,7 +253,7 @@ g_images() {
 
 g_vshit() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local us="${BASH_REMATCH[1]}"
@@ -268,14 +268,14 @@ g_vshit() {
     s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
     s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
     local u=$(sed -n '2p' "$USERSDIR/$ui.user")
-    SHIT="<a href='/@$u'>@$u</a>: $s ($(like_url "$ui" "$si"))"
+    SHIT="<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'>$(like_url "$ui" "$si")</div></div>"
 
     answer 1337 "$(addTplParam 'TITLE' "Shit";  addTplParam 'USERNAME' "$USER"; render 'vshit.sh')";
 }
 
 g_like_shit() {
     if [ ! $AUTHENTICATED -gt 0 ]; then
-        addMsg "error" "You are not logged in!"
+        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
 

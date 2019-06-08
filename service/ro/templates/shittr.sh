@@ -10,21 +10,46 @@ $(render navigation.sh)
 
     <main role="main" class="container">
 
-      <div class="starter-template">
+      <div class="">
         $(render messages.sh)
-        <h1>${TITLE}</h1>
-        <h2>$bio</h2>
-        <p>$(if [ $if -eq 0 ]; then echo "<a href='/@${OUSER}/follow'>Follow</a>"; else  echo "<a href='/@${OUSER}/unfollow'>Unfollow</a>"; fi) (Follows <a href='/@${OUSER}/following'>$followCnt</a> Shittrs / <a href='/@${OUSER}/followers'>$followerCnt</a> Shitters following)</p>
-        <h2>Shits</h2>
-        <ul>
+        
+        <div class="row">
+          <div class="col-lg-3">
+              <h1>@${OUSER}</h1>
+              <h5>$bio</h5>
+              <div class="table-responsive">
+                <table class="table table-dark table-striped table-hover">
+                  <tr>
+                    <td style="text-align: center">$(if [ $if -eq 0 ]; then echo "<a href='/@${OUSER}/follow'>Follow</a>"; else  echo "<a href='/@${OUSER}/unfollow'>Unfollow</a>"; fi)</td>
+                  </tr>
+                  <tr>
+                   <td><a href='/@${OUSER}/following'>$followCnt</a> Shittrs</td>
+                  </tr>
+                  <tr>
+                    <td><a href='/@${OUSER}/followers'>$followerCnt</a> Followers</td>
+                  </tr>
+                </table>
+              </div>
+          </div>
+          <div class="col-lg-9">
+            <h1>Shits</h1>
+            <table class="table table-hover table-striped table-dark">
+            <tbody>
 EOF
         for s in "${SHITS[@]}"
         do 
-          echo "<p>${s}</p>"
+          cat <<EOF
+                <tr>
+                  <td>${s}</td>
+                </tr>
+EOF
         done
 cat <<EOF
-        </ul>
+          </tbody>
+          </table>
+        </div>
       </div>
+    </div>
 
     </main><!-- /.container -->
 

@@ -12,5 +12,6 @@ cat <<EOF
 
 <!-- Custom styles for this template -->
 <link href="/static/css/starter-template.css" rel="stylesheet">
+<link href="/static/css/style.css" rel="stylesheet">
 </head>
 EOF

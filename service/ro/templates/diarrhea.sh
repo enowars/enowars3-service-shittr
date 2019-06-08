@@ -10,17 +10,23 @@ $(render navigation.sh)
 
     <main role="main" class="container">
 
-      <div class="starter-template">
+      <div class="">
         $(render messages.sh)
-        <h1>The world's biggest shit stream!</h1>
-        <ul>
+        <h1 style="text-align: center">The world's biggest shit stream!</h1>
+        <table class="table table-hover table-striped table-dark">
+        <tbody>
 EOF
         for s in "${SHITS[@]}"
         do 
-          echo "<p>${s}</p>"
+          cat <<EOF
+        <tr>
+          <td>${s}</td>
+        </tr>
+EOF
         done
 cat <<EOF
-        </ul>
+      </tbody>
+      </table>
       </div>
 
     </main><!-- /.container -->
