@@ -1,0 +1,18 @@
+#!/bin/bash
+TEAMID=$(cat /etc/teamid)
+PROJECT="##PROJECT##"
+if [[ $(echo $TEAMID) ]]; then
+    sed -e "s|TEAMID|$TEAMID|g" /services/${PROJECT}/docker-compose.yml.template > /services/${PROJECT}/docker-compose.yml
+else
+    echo "No teamid set yet. Use /usr/bin/network-setup to resolve"
+fi
+
+chown -R 999:999 /services/${PROJECT}/{ro,rw}
+
+cat <<EOF
+####
+#
+#INFO: You need to rebuild and restart your service!
+#
+####
+EOF
