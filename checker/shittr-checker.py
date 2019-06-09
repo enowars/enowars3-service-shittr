@@ -24,10 +24,15 @@ class ShittrChecker(BaseChecker):
     # 
     def __init__(self, *args, **kwargs):
         super(ShittrChecker, self).__init__(*args, **kwargs)
-        self.flagfunc = [
+        self.putflag_funcs = [
             self.putflag_public_public_post,
-            self.putflag_prublic_private_post,
+            self.putflag_public_private_post,
             self.putflag_user_bio
+        ]
+        self.getflag_funcs = [
+            self.getflag_public_public_post,
+            self.getflag_public_private_post,
+            self.getflag_user_bio
         ]
 
         self.REG_URL = "https://[{}]:{}/register".format(self.address, self.port)
@@ -35,6 +40,7 @@ class ShittrChecker(BaseChecker):
         self.SHIT_URL = "https://[{}]:{}/shit".format(self.address, self.port)
         self.LOGOUT_URL = "https://[{}]:{}/logout".format(self.address, self.port)
         self.SETTINGS_URL = "https://[{}]:{}/settings".format(self.address, self.port)
+        self.MYPROFILE_URL = "https://[{}]:{}/@USERNAME".format(self.address, self.port)
 
     def putflag_user_bio(self):
         user, pw = self.get_or_create_account()
@@ -54,7 +60,7 @@ class ShittrChecker(BaseChecker):
 
         self.logout()
 
-    def putflag_prublic_private_post(self):
+    def putflag_public_private_post(self):
         user, pw = self.get_or_create_account()
 
         self.login(user, pw)
@@ -92,8 +98,8 @@ class ShittrChecker(BaseChecker):
         except:
             raise BrokenServiceException("Cannot login user")
 
-    def get_or_create_account(self):
-        if False:
+    def get_or_create_account(self, existing=False):
+        if existing:
             # Return known credentials
             return self.get_account()
         else:
@@ -101,7 +107,10 @@ class ShittrChecker(BaseChecker):
             return self.create_account()
 
     def get_account(self):
-        pass
+        user = self.team_db[self.flag]['user']
+        pw = self.team_db[self.flag]['pw']
+        self.info("I am {} / {}")
+        return user, pw
 
     def create_account(self):
         fkr = faker.Faker()
@@ -109,20 +118,29 @@ class ShittrChecker(BaseChecker):
         pw = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(6,12)))
 
         try:
-            ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=True)
+            ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=True, follow=True)
         except:
             raise BrokenServiceException("Cannot register new user")
 
+        if not '''<div class='alert alert-primary' role='alert'>Successfully signed up as @{}!</div>'''.format(user) in ret:
+            raise BrokenServiceException("Wrong post-registration message!")
 
+        self.team_db[self.flag] = {
+            'user': user,
+            'pw' : pw
+        }
         self.info("Registered user: {} / {}".format(user, pw))
 
         return user, pw
 
-    def _get_request(self, url, params=None, useCookies=False, *args): 
+    def _get_request(self, url, params=None, useCookies=False, follow=False, *args): 
         buffer = BytesIO()
         c = pycurl.Curl()
+        c.setopt(c.WRITEDATA, buffer)
         c.setopt(c.VERBOSE, True)
+        c.setopt(c.FOLLOWLOCATION, follow)
         c.setopt(c.URL, url)
+        c.setopt(pycurl.USERAGENT, self.http_useragent)
         c.setopt(pycurl.SSL_VERIFYPEER, 0)   
         c.setopt(pycurl.SSL_VERIFYHOST, 0)
 
@@ -150,14 +168,17 @@ class ShittrChecker(BaseChecker):
 
         return buffer.getvalue().decode('utf-8')
 
-    def _post_request(self, url, params, useCookies=False, *args): 
+    def _post_request(self, url, params, useCookies=False, follow=False, *args): 
         buffer = BytesIO()
         c = pycurl.Curl()
+        c.setopt(c.WRITEDATA, buffer)
         c.setopt(c.VERBOSE, True)
+        c.setopt(c.FOLLOWLOCATION, follow)
         c.setopt(c.URL, url)
-        c.setopt(pycurl.SSL_VERIFYPEER, 0)   
-        c.setopt(pycurl.SSL_VERIFYHOST, 0)
         c.setopt(c.POSTFIELDS, urlencode(params))
+        c.setopt(pycurl.USERAGENT, self.http_useragent)
+        c.setopt(pycurl.SSL_VERIFYPEER, 0)   
+        c.setopt(pycurl.SSL_VERIFYHOST, 0)
 
         if useCookies:
             cookie_file = self.flag + 'cookie'
@@ -182,12 +203,58 @@ class ShittrChecker(BaseChecker):
                 self.team_db[cookie_file] = cookie_f.read()
 
         return buffer.getvalue().decode('utf-8')
+
+    def getflag_public_private_post(self):
+        user, pw = self.get_or_create_account(existing=True)
+
+        html = ''
+        try:
+            html = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
+        except:
+            raise BrokenServiceException("Could not retrieve /@{}".format(user))
+
+        if '''<div class='content'>{}</div>'''.format(self.flag) in str(html):
+            return
+        else:
+            raise BrokenServiceException("Flag not found in /@{}".format(user))
+
+    def getflag_public_public_post(self):
+        user, pw = self.get_or_create_account(existing=True)
+
+        html = ''
+        try:
+            html = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
+        except:
+            raise BrokenServiceException("Could not retrieve /@{}".format(user))
+
+        if '''<div class='content'>{}</div>'''.format(self.flag) in str(html):
+            return
+        else:
+            raise BrokenServiceException("Flag not found in /@{}".format(user))
+
+
+    def getflag_user_bio(self):
+        user, pw = self.get_or_create_account(existing=True)
+
+        self.info("Logging in as {} / {}".format(user, pw))
+        self.login(user, pw)
+
+        html = ''
+        try:
+            html = self._get_request(self.SETTINGS_URL, useCookies=True)
+        except:
+            raise BrokenServiceException("Could not retrieve /settings")
+
+        if '''<textarea name='bio'  class="form-control">{}</textarea>'''.format(self.flag) in str(html):
+            return
+        else:
+            raise BrokenServiceException("Flag not found in /settings")
 
     def putflag(self):
-        self.flagfunc[self.flag_idx]()
+        self.putflag_funcs[self.flag_idx]()
 
     def getflag(self):
-        pass
+        self.getflag_funcs[self.flag_idx]()
 
     def putnoise(self):
         pass
