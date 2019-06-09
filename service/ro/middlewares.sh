@@ -42,7 +42,7 @@ cleanup() {
     if [ $(($EP%30)) -eq 0 ]
     then
         debug "DELETED FILES!"
-        find "$RWDIR" -mmin +15 -exec rm -rf {} \;
+        find "$RWDIR" -type f -mmin +15 -exec rm -rf {} \;
     fi
 }
 

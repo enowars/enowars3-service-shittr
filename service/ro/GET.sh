@@ -87,8 +87,8 @@ g_shittr() {
         s=$(urldecode "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-        local u=$(sed -n '2p' "$USERSDIR/$u.user")
-        SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$u$s.shit' class='viewlink'>View</a> $(like_url "$u$s")</div></div>")
+        local uu=$(sed -n '2p' "$USERSDIR/$u.user")
+        SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uu$s.shit' class='viewlink'>View</a> $(like_url "$uu$s")</div></div>")
     done < <(last_shits "$OUSER" 25)
 
     answer 1337 "$(addTplParam 'TITLE' "@$OUSER's Profile"; addTplParam "if" "$if"; addTplParam "followCnt" "$fc"; addTplParam "followerCnt" "$fec"; addTplParam "bio" "$bio"; addTplParam 'OUSER' "$OUSER"; addTplParam 'USERNAME' "$USER"; render 'shittr.sh')";

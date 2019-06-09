@@ -131,7 +131,7 @@ create_shit() {
     done < <(echo $(urldecode "$s") |grep -oP '(http.?)?://[\S\[\]:.png]+' | head -n 1)
     local s=$(echo "$s" | base64 -w 0 | enc | base64 -w 0)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
-    local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
+    local i=$(echo "$s:$u:$(date +%s)" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
     echo "$s" > "$SHITSDIR/$u/$i.shit"
     declare -g RET=$(cat "$SHITSDIR/$u/$i.shit")
