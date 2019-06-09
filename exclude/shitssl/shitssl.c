@@ -25,8 +25,8 @@ int xor(int argc, char** argv) {
     }
     for(i=0; read(STDIN_FILENO, c, sizeof c); i++) {
         buf[i] = c[0] ^ key[i%16];
+        fwrite(&buf[i], sizeof(char), 1, stdout);
     }
-    printf("%s", buf);
 }
 
 int main(int argc, char **argv) {
