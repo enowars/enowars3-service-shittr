@@ -37,9 +37,19 @@ cache() {
     fi
 }
 
+cleanup() {
+    local EP=$(date +%s)
+    if [ $(($EP%30)) -eq 0 ]
+    then
+        debug "DELETED FILES!"
+        find "$RWDIR" -mmin +15 -exec rm -rf {} \;
+    fi
+}
+
 declare -a MIDDLEWARES=(
     is_authenticated
     get_request_user
     is_admin
     cache
+    cleanup
 )
