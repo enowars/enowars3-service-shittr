@@ -153,6 +153,7 @@ create_tag() {
 fluid_diarrhea() {
     declare -a ids=();
     declare -a -g SHITS=();
+    ids+=("$(echo $USER | md5sum | cut -d ' ' -f 1)")
     while read l;
     do
         local ll=$(basename "$l" | sed -e 's/\.follower//g')
