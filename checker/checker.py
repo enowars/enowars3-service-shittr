@@ -1,7 +1,7 @@
-from enochecker import BaseChecker, BrokenServiceException, run
+from enochecker import BaseChecker, BrokenServiceException, run, OfflineException
 from urllib.parse import urlencode
 from io import BytesIO
-import string, random, faker, pycurl, os, time, re
+import string, random, faker, pycurl, os, time, re, hashlib
 
 class ShittrChecker(BaseChecker):
     port = 31337
@@ -16,12 +16,12 @@ class ShittrChecker(BaseChecker):
     # self.timeout: In der Zeit fertig werden
     # self.team_id: ID von dem Ziel-Team
     # self.address: Ziel IP ohne port
-    # 
+    #
     # Exceptions:
     # - raise BrokenServiceException("Fuck me")
     # - OfflineException("oO")
     # - Ansonsten return ist OK
-    # 
+    #
     def __init__(self, *args, **kwargs):
         super(ShittrChecker, self).__init__(*args, **kwargs)
         self.putflag_funcs = [
@@ -75,60 +75,42 @@ class ShittrChecker(BaseChecker):
 
 
     def logout(self):
-        try:
-            ret = self._get_request(self.SHIT_URL, useCookies=True)
-        except:
-            raise BrokenServiceException("Cannot login")
+        ret = self._get_request(self.SHIT_URL, useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
 
     def post_settings(self, bio, public):
-        try:
-            ret = self._post_request(self.SETTINGS_URL, {'public': 'on' if public else '', 'bio': bio}, useCookies=True, follow=True)
-        except:
-            raise BrokenServiceException("Cannot post public shit")
-
-        if not '''<div class='alert alert-primary' role='alert'>Profile settings successfully updated!</div>''' in ret:
-            raise BrokenServiceException("Wrong post-saving message!")
+        ret = self._post_request(self.SETTINGS_URL, {'public': 'on' if public else '', 'bio': bio}, useCookies=True, follow=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
 
     def post_shit(self, text, private=False):
-        try:
-            ret = self._post_request(self.SHIT_URL, {'private': 'on' if private else '', 'post': text}, useCookies=True, follow=True)
-        except:
-            raise BrokenServiceException("Cannot post public shit")
-
-        if not re.search(r"<div class='alert alert-primary' role='alert'>Successfully shat! Message: [a-zA-Z0-9=]+</div>", ret):
-            raise BrokenServiceException("Wrong post-shitting message!")
+        ret = self._post_request(self.SHIT_URL, {'private': 'on' if private else '', 'post': text}, useCookies=True, follow=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
 
     def login(self, user, pw):
-        try:
-            ret = self._post_request(self.LOGIN_URL, {'username': user, 'password': pw}, useCookies=True)
-        except:
-            raise BrokenServiceException("Cannot login user")
+        ret = self._post_request(self.LOGIN_URL, {'username': user, 'password': pw}, useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
     def get_or_create_account(self, existing=False):
@@ -140,30 +122,29 @@ class ShittrChecker(BaseChecker):
             return self.create_account()
 
     def get_account(self):
-        user = self.team_db[self.flag]['user']
-        pw = self.team_db[self.flag]['pw']
-        self.info("I am {} / {}")
-        return user, pw
+        try:
+            user = self.team_db[self.flag]['user']
+            pw = self.team_db[self.flag]['pw']
+            self.info("I am {} / {}")
+            return user, pw
+        except KeyError:
+            raise BrokenServiceException("Key error -> Flag not found, service down")
 
     def create_account(self):
         fkr = faker.Faker()
+        fkr.seed_instance(self.flag)
         user = fkr.user_name()
         pw = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(6,12)))
 
-        try:
-            ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=True, follow=True)
-        except:
-            raise BrokenServiceException("Cannot register new user")
+        ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=True, follow=True)
 
+        print(ret)
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
-
-        if not '''<div class='alert alert-primary' role='alert'>Successfully signed up as @{}!</div>'''.format(user) in ret:
-            raise BrokenServiceException("Wrong post-registration message!")
 
         self.team_db[self.flag] = {
             'user': user,
@@ -173,21 +154,21 @@ class ShittrChecker(BaseChecker):
 
         return user, pw
 
-    def _get_request(self, url, params=None, useCookies=False, follow=True, *args): 
+    def _get_request(self, url, params=None, useCookies=False, follow=True, *args):
         buffer = BytesIO()
         c = pycurl.Curl()
         c.setopt(c.WRITEDATA, buffer)
         c.setopt(c.VERBOSE, True)
         c.setopt(c.FOLLOWLOCATION, follow)
         c.setopt(c.URL, url)
-        c.setopt(pycurl.TIMEOUT, 2)
+        c.setopt(pycurl.TIMEOUT, 5)
         c.setopt(pycurl.HEADER, True)
         c.setopt(pycurl.USERAGENT, self.http_useragent)
-        c.setopt(pycurl.SSL_VERIFYPEER, 0)   
+        c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.SSL_VERIFYHOST, 0)
 
         if useCookies:
-            cookie_file = self.flag + '.cookie'
+            cookie_file = hashlib.md5((self.flag).encode()).hexdigest() + ".cookie"
             if not os.path.exists(cookie_file):
                 (open(cookie_file, 'w')).close()
 
@@ -201,8 +182,11 @@ class ShittrChecker(BaseChecker):
                 c.setopt(pycurl.COOKIEFILE, cookie_file)
                 c.setopt(pycurl.COOKIEJAR, cookie_file)
 
-        c.perform()
-        c.close()
+        try:
+            c.perform()
+            c.close()
+        except pycurl.error:
+            raise OfflineException("Service not reachable")
 
         if useCookies:
             with open(cookie_file, 'r') as cookie_f:
@@ -210,22 +194,22 @@ class ShittrChecker(BaseChecker):
 
         return buffer.getvalue().decode('utf-8')
 
-    def _post_request(self, url, params, useCookies=False, follow=True, *args): 
+    def _post_request(self, url, params, useCookies=False, follow=True, *args):
         buffer = BytesIO()
         c = pycurl.Curl()
         c.setopt(c.WRITEDATA, buffer)
         c.setopt(c.VERBOSE, True)
         c.setopt(c.FOLLOWLOCATION, follow)
-        c.setopt(c.URL, url)        
+        c.setopt(c.URL, url)
         c.setopt(c.POSTFIELDS, urlencode(params))
-        c.setopt(pycurl.TIMEOUT, 2)
+        c.setopt(pycurl.TIMEOUT, 5)
         c.setopt(pycurl.HEADER, True)
         c.setopt(pycurl.USERAGENT, self.http_useragent)
-        c.setopt(pycurl.SSL_VERIFYPEER, 0)   
+        c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.SSL_VERIFYHOST, 0)
 
         if useCookies:
-            cookie_file = self.flag + '.cookie'
+            cookie_file = hashlib.md5((self.flag).encode()).hexdigest() + ".cookie"
             if not os.path.exists(cookie_file):
                 (open(cookie_file, 'w')).close()
 
@@ -239,8 +223,11 @@ class ShittrChecker(BaseChecker):
                 c.setopt(pycurl.COOKIEFILE, cookie_file)
                 c.setopt(pycurl.COOKIEJAR, cookie_file)
 
-        c.perform()
-        c.close()
+        try:
+            c.perform()
+            c.close()
+        except pycurl.error:
+            raise OfflineException("Service unreachable")
 
         if useCookies:
             with open(cookie_file, 'r') as cookie_f:
@@ -249,18 +236,15 @@ class ShittrChecker(BaseChecker):
         return buffer.getvalue().decode('utf-8')
 
     def getflag_public_private_post(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
         user, pw = self.get_or_create_account(existing=True)
 
-        ret = ''
-        try:
-            ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
-        except:
-            raise BrokenServiceException("Could not retrieve /@{}".format(user))
+        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
 
@@ -268,40 +252,34 @@ class ShittrChecker(BaseChecker):
             raise BrokenServiceException("Flag not found in /@{}".format(user))
 
     def getflag_public_public_post(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
         user, pw = self.get_or_create_account(existing=True)
 
-        ret = ''
-        try:
-            ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
-        except:
-            raise BrokenServiceException("Could not retrieve /@{}".format(user))
+        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
-        if not '''<div class='content'>{}</div>'''.format(self.flag) in str(ret):
-            raise BrokenServiceException("Flag not found in /@{}".format(user))
+        if not '''<div class='content'>{}</div>'''.format(self.flag) in ret:
+            raise BrokenServiceException("Flag {} not found in /@{}: {}".format(self.flag, user, ret))
 
 
     def getflag_user_bio(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
         user, pw = self.get_or_create_account(existing=True)
 
         self.info("Logging in as {} / {}".format(user, pw))
         self.login(user, pw)
 
-        ret = ''
-        try:
-            ret = self._get_request(self.SETTINGS_URL, useCookies=True)
-        except:
-            raise BrokenServiceException("Could not retrieve /settings")
+        ret = self._get_request(self.SETTINGS_URL, useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
-        if not '''Content Type: 1337/5P34K''' in ret: 
+        if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
 
