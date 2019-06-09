@@ -35,12 +35,16 @@ class ShittrChecker(BaseChecker):
             self.getflag_user_bio
         ]
 
-        self.REG_URL = "https://[{}]:{}/register".format(self.address, self.port)
-        self.LOGIN_URL = "https://[{}]:{}/login".format(self.address, self.port)
-        self.SHIT_URL = "https://[{}]:{}/shit".format(self.address, self.port)
-        self.LOGOUT_URL = "https://[{}]:{}/logout".format(self.address, self.port)
-        self.SETTINGS_URL = "https://[{}]:{}/settings".format(self.address, self.port)
-        self.MYPROFILE_URL = "https://[{}]:{}/@USERNAME".format(self.address, self.port)
+        # FUCK MY LIFE. I WANNA DIE
+        if ':' in self.address:
+            self.address = "[{}]".format(self.address)
+
+        self.REG_URL = "https://{}:{}/register".format(self.address, self.port)
+        self.LOGIN_URL = "https://{}:{}/login".format(self.address, self.port)
+        self.SHIT_URL = "https://{}:{}/shit".format(self.address, self.port)
+        self.LOGOUT_URL = "https://{}:{}/logout".format(self.address, self.port)
+        self.SETTINGS_URL = "https://{}:{}/settings".format(self.address, self.port)
+        self.MYPROFILE_URL = "https://{}:{}/@USERNAME".format(self.address, self.port)
 
     def putflag_user_bio(self):
         user, pw = self.get_or_create_account()
