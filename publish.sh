@@ -12,6 +12,7 @@ then
     exit 1
 fi
 
+set -x 
 VERSION=$1
 
 echo "$1" > VERSION
