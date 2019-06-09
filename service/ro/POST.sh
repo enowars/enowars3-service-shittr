@@ -89,7 +89,7 @@ p_shit() {
 
     create_shit "$user" "${PARAMS[post]}" "${PARAMS[private]}"
 
-    addMsg "success" "Successfully shat!"
+    addMsg "success" "Successfully shat! Message: $RET"
 
     clearPageCache "g_diarrhea"
 

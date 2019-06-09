@@ -134,6 +134,7 @@ create_shit() {
     local i=$(echo "$s:$u" | sha256sum | cut -d' ' -f 1)
     mkdir -p "$SHITSDIR/$u/"
     echo "$s" > "$SHITSDIR/$u/$i.shit"
+    declare -g RET=$(cat "$SHITSDIR/$u/$i.shit")
     echo "Private=$p" >> "$SHITSDIR/$u/$i.shit"
     echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
     echo "$u:$i" >> "$SHITSDIR/diarrhea.log"
