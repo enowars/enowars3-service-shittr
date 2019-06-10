@@ -1,0 +1,34 @@
+#!/bin/bash
+echo "POST INST"
+TEAMID=$(cat /etc/teamid)
+PROJECT="##PROJECT##"
+if [[ $(echo $TEAMID) ]]; then
+    if [ -f /services/${PROJECT}/docker-compose.yml.template  ]; then
+        echo "Creating docker-compose.yml from docker-compose.yml.template"
+        sed -e "s|TEAMID|$TEAMID|g" /services/${PROJECT}/docker-compose.yml.template > /services/${PROJECT}/docker-compose.yml
+    fi
+else
+    echo "No teamid set yet. Use /usr/bin/network-setup to resolve"
+fi
+
+echo "Reloading systemctl daemon"
+/bin/systemctl daemon-reload
+
+echo "Setting permissions"
+mkdir -p /services/${PROJECT}/rw
+chown -R 999:999 /services/${PROJECT}/{ro,rw}
+
+cat <<EOF
+###############
+##
+## INFO: You might need to rebuild and restart your service!
+## > cd /services/${PROJECT}
+## > docker-compose build --no-cache
+## > systemctl restart ${PROJECT}
+##
+###############
+EOF
+
+echo "Starting service ${PROJECT}"
+echo "Check 'systemctl status ${PROJECT}' for more info!"
+/bin/systemctl start "${PROJECT}"
