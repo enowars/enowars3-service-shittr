@@ -1,27 +1,26 @@
-# Replace TEAMID with a teamid, e.g. 0 for our internal subnet
-# Replace SERVICENET with the same subnet your service runs on in the gamenetwork
-# Replace SERVICENAME with your service's name
-version: '2.1'
+version: '3'
 services:
-  SERVICENAME-backend:
+  shittr-backend:
+    image: 10.13.37.6:5000/shittr-backend
     build: .
-    networks:
-      SERVICENAME_checker_network:
-        ipv6_address: fd00:1337:TEAMID:SERVICENET::2
-  SERVICENAME-frontend:
+      - bridge
+      - enoverlay
+    environment:
+      - MONGO_ENABLED=1
+      - MONGO_HOST=checkerdb_mongo_1
+      - MONGO_PORT=27017
+      - MONGO_USER=ipv6islove
+      - MONGO_PASSWORD=dockerislove
+  shittr-frontend:
     image: nginx:1.13-alpine
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
-      - SERVICENAME-backend
+      - shittr-backend
     networks:
-      SERVICENAME_checker_network:
-        ipv6_address: fd00:1337:TEAMID:SERVICENET::1
+      - enoverlay
 networks:
-  SERVICENAME_checker_network:
-    enable_ipv6: true
-    ipam:
-      driver: default
-      config:
-        - subnet: fd00:1337:TEAMID:SERVICENET::/64
-          gateway: fd00:1337:TEAMID:SERVICENET::ffff
+   bridge:
+     external: true
+   enoverlay:
+     external: true

@@ -1,12 +1,12 @@
 server {
-    listen 80 default_server;
+    listen [::]:80;
     resolver 127.0.0.11 ipv6=off;
     location / {
         try_files $uri @wsgi;
     }
 
     location @wsgi {
-        set $target shittr-checker_shittr-backend;
+        set $target shittr-backend;
         include uwsgi_params;
         uwsgi_pass $target:3031;
     }
