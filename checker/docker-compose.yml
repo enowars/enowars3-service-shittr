@@ -1,10 +1,17 @@
-version: '2.1'
+version: '3'
 services:
   shittr-backend:
+    image: 10.13.37.6:5000/shittr-backend
     build: .
     networks:
-      shittr_checker_network:
-        ipv6_address: fd00:1337:0:8454::2
+      - bridge
+      - enoverlay
+    environment:
+      - MONGO_ENABLED=1
+      - MONGO_HOST=checkerdb_mongo_1
+      - MONGO_PORT=27017
+      - MONGO_USER=ipv6islove
+      - MONGO_PASSWORD=dockerislove
   shittr-frontend:
     image: nginx:1.13-alpine
     volumes:
@@ -12,13 +19,16 @@ services:
     depends_on:
       - shittr-backend
     networks:
-      shittr_checker_network:
-        ipv6_address: fd00:1337:0:8454::1
+      - enoverlay
+    labels:
+        - "traefik.enable=true"
+        - "traefik.backend=shittr-checker"
+        - "traefik.docker.network=enoverlay"
+        - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com"
+        - "traefik.port=80"
+
 networks:
-  shittr_checker_network:
-    enable_ipv6: true
-    ipam:
-      driver: default
-      config:
-        - subnet: fd00:1337:0:8454::/64
-          gateway: fd00:1337:0:8454::ffff
+   bridge:
+     external: true
+   enoverlay:
+     external: true

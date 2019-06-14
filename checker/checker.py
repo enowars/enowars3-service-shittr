@@ -6,6 +6,9 @@ import string, random, faker, pycurl, os, time, re, hashlib
 class ShittrChecker(BaseChecker):
     port = 31337
 
+    flag_count = 3
+    noise_count = 1
+    havoc_count = 1
 
     # self.flag
     #   - Flagge in putflag
