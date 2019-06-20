@@ -72,19 +72,19 @@ KNOWN ISSUES / WON'T FIX
 - FIX: Remove the urldecode on the file path and/or fix the regex to only allow .png files
 - TODO: Maybe 
 
-## Crypto 1
+## Crypto 1 - Exploit: ??
 - The server.sh includes /bin/ in the PATH, so that the our "shit/openssl" tool is called instead of openssl in utils.sh
 - Uses simple ECB with the first 16 bytes as the key from enc.key to encrypt shits.
 - Shits can be downloaded from /settings, so one can obtain plaintext + ciphertext pairs to recover the key.
 - The key can then be used to decrypt other people's private shits!
 - FIX: Use more than 16 bytes and/or other crypto algorithm
 
-## RCE 2
+## RCE 2 - Exploit ??? (only when unpatched file write)
 - The shitssl binary has 2 BOFs, of which one is exploitable by creating a file e.g. in the shitposts directory, which will be read and tried to decrypt by the binary.
 - If the base64 decoded strings is > 2048 bytes, then it will copy more than it's allowed into a buffer and result in an easy BOF
 - FIX: Patch binary and/or limit lengths
 
-## RCE 1 (?)
+## RCE 1 (?) - Exploit ??? (only when unpatched file write)
 - The p_downloadshit function creates a tar archive with unquoted expansion * 
 - This might (?!) result in a vulnerability like RCE
 - FIX: Make tar secure
@@ -95,8 +95,6 @@ KNOWN ISSUES / WON'T FIX
 - Maybe some debug options that leak flags?
 
 - Bild-Fetcher nochmal debuggen, ob nicht file://etc/passwd#test.png oder so geht. Redirect von HTTP ist in libcurl deaktiviert
-- Have a look at the cookie-Path traversal and/or others
 - Implement language choosing based on the Accept-Header
 - Implement answering to shits
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
-- (?) Implement that if two people are following each other, they see their shits
