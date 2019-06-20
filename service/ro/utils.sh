@@ -10,6 +10,7 @@ trim() {
     echo -n "$var"
 }
 
+# https://stackoverflow.com/a/37840948/234234d
 get_cookie() {
     local cookies="${INHDR[Cookie]}"
     local IFS=';'
