@@ -1,16 +1,15 @@
 # SHITTR SERVICE
 
-# VULNS:
-
-- GET.sh, function g_static: File includsion should be possible
-- db.sh, function get_user: Path traversal with cookie value (exploitable?)
-
-
 KNOWN ISSUES / WON'T FIX
 - CSRF is possible, but not of much use?
 - No follow restriction limit in GET.sh (g_follow_shittr), because followCnt does not exist (should be follow_cnt) => red herring - nothing is done with that restriction anyway
 
 # CONFIRMED VULNS
+
+## 2nd line of file read
+- In db.sh, get_user the raw cookie value is passed to cat + sed, which will return the 2nd line from a file as the user name
+- I cannot think of an exploit :-/ 
+- FIX: Dunno? Properly chroot/escape the file name
 
 ## Auth bypass 1
 - In dh.sh, the service generates seemingly strong (dd if=/dev/urandom) session IDs, but those are only 3-4 characters long, thus brute-forceable.
@@ -33,9 +32,10 @@ KNOWN ISSUES / WON'T FIX
 ## Visibility Bypass 3
 - If one unfollows himself, then the matching ids-Array in db.sh (fluid_diarrhea) is (), which matches all entries and therefore all shits are displayed.
 
-## Info leak 1
+## Info leak 1 / Crypto 2
 - Directory listing is enabled for /static/, or folders in general
-- FIX: Disable Directory Listing
+- People can leak the ssl private key and/or the encryption key
+- FIX: Disable Directory Listing and/or block access to the files
 
 ## Info leak 2
 - HEAD requests can be used to check if folders or files exist
@@ -44,6 +44,7 @@ KNOWN ISSUES / WON'T FIX
 ## Info leak 3
 - The HEAD.sh contains a regex that matches against $DEBUG and will happily give away the last 500 lines of debug log. (even if DEBUG=0, bc an URL with a '0' will match)
 - The attacker can obtain flags
+- Debug log contains the session id (rand number)
 - FIX: Remove the debug log retrieval in HEAD.sh
 
 ## Info leak 4
