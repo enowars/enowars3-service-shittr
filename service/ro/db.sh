@@ -36,9 +36,10 @@ valid_login() {
 
 generate_session() {
     local rand=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | xxd |  tr -dc '[:digit:]\n\r' | rev | head -n1)
-    echo $(echo "$1" | md5sum | cut -d ' ' -f 1) > "$SESSIONSDIR/${rand:0:3}.session"
+    local sessid=$(echo "${rand:0:3}" | md5sum | cut -d ' ' -f 1)
+    echo $(echo "$1" | md5sum | cut -d ' ' -f 1) > "$SESSIONSDIR/$sessid.session"
     debug "Session is $rand"
-    echo "${rand:0:3}"
+    echo "${sessid}"
 }
 
 valid_session() {
@@ -73,7 +74,7 @@ addMsg() {
 }
 
 getMsgs() {
-    tac "$MESSAGESDIR/$(echo $USER | md5sum | cut -d ' ' -f 1).msg"
+    tac "$MESSAGESDIR/$(echo  $USER | md5sum | cut -d ' ' -f 1).msg"
     rm  "$MESSAGESDIR/$(echo $USER | md5sum | cut -d ' ' -f 1).msg"
 }
 
