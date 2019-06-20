@@ -27,7 +27,7 @@ KNOWN ISSUES / WON'T FIX
 ---> Post shit with flag
 ---> Post public shit with "@<myusername>" just took a dump.
 
-## Visibility Bypass 2
+## Visibility Bypass 2 - Exploit: no (but works!)
 - Viewing a hidden user's shits is possible at /tag/<tag>
 - The attacker could guess the hashtags #flag or #enowars and monitor those for shits from the gamebot with a flag
 - FIX: Filter hidden user's shits from the hashtag
@@ -37,29 +37,29 @@ KNOWN ISSUES / WON'T FIX
 ---> Post shit with flag
 ---> Post public shit with "#enowars" hashtag
 
-## Visibility Bypass 3
+## Visibility Bypass 3 - Exploit: no (but works!)
 - If one unfollows himself, then the matching ids-Array in db.sh (fluid_diarrhea) is (), which matches all entries and therefore all shits are displayed.
 
-## Info leak 1 / Crypto 2
+## Info leak 1 / Crypto 2 - Exploit: no (but works!)
 - Directory listing is enabled for /static/, or folders in general
 - People can leak the ssl private key and/or the encryption key
 - FIX: Disable Directory Listing and/or block access to the files
 
-## Info leak 2
+## Info leak 2 - Exploit: no (but works!)
 - HEAD requests can be used to check if folders or files exist
 - FIX: Do not allow path traversal
 
-## Info leak 3
-- The HEAD.sh contains a regex that matches against $DEBUG and will happily give away the last 500 lines of debug log. (even if DEBUG=0, bc an URL with a '0' will match)
+## Info leak 3 - Exploit: no (but works!)
+- The HEAD.sh contains a regex that matches against $DEBUG and will happily give away the last 500 lines of debug log. (even if DEBUG=0, bc an URL with a '0' or '1' will match)
 - The attacker can obtain flags
 - Debug log contains the session id (rand number)
 - FIX: Remove the debug log retrieval in HEAD.sh
 
-## Info leak 4
+## Info leak 4'- Exploit: no (but works!)
 - If the user is an admin, GET /log will display the last 100 entries for the requesting IP address
 - FIX: None (only allow admins to become admins!)
 
-## ADMIN BYPASS 1
+## ADMIN BYPASS 1 - Exploit: no (but works!)
 - Register a user name that matches /admin/ 
 - The is_admin middleware checks $DEBUG for it's string length (-n), so it will always be true for DEBUG=0 and DEBUG=1 
 - The attacker can therefore gain "ADMIN=1" easily
