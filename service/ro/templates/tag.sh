@@ -14,7 +14,7 @@ $(render navigation.sh)
         $(render messages.sh)
         <div class="row">
           <div class="col-lg-3">
-            <h1>#${TAG}</h1>
+            <h1>#$(htmlEscape "${TAG}")</h1>
           </div>
           <div class="col-lg-9">
             <h1>Shits</h1>

@@ -17,7 +17,7 @@ $(render navigation.sh)
         <tbody>
 EOF
         for s in "${SHITS[@]}"
-        do 
+        do  
           cat <<EOF
         <tr>
           <td>${s}</td>

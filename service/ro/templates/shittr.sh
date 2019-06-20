@@ -16,7 +16,7 @@ $(render navigation.sh)
         <div class="row">
           <div class="col-lg-3">
               <h1>@${OUSER}</h1>
-              <h5>$bio</h5>
+              <h5>$(htmlEscape "$bio")</h5>
               <div class="table-responsive">
                 <table class="table table-dark table-striped table-hover">
                   <tr>

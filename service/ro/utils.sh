@@ -58,3 +58,12 @@ dec() {
     read -r data
     echo "$data" | base64 -d | openssl enc -d -aes-256-ofb -K $(cat "$ENCKEY") 2>/dev/null
 }
+
+# https://stackoverflow.com/questions/12873682/short-way-to-escape-html-in-bash/52570455#52570455
+function htmlEscape () {
+    s=${1//&/&amp;}
+    s=${s//</&lt;}
+    s=${s//>/&gt;}
+    s=${s//'"'/&quot;}
+    echo $s
+}

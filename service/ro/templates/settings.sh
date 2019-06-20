@@ -12,7 +12,7 @@ $(render navigation.sh)
 
       <div class="starter-template">
         $(render messages.sh)
-        <h1>${TITLE}</h1>
+        <h1>$(htmlEscape "${TITLE}")</h1>
         <div class="row">
           <div class="col-lg-6 offset-lg-3">
             <form method="POST">
@@ -22,7 +22,7 @@ $(render navigation.sh)
               </div>
               <div class="form-group">
                 <label for="bio">Biography</label>
-                <textarea name='bio'  class="form-control">${bio}</textarea>
+                <textarea name='bio'  class="form-control">$(htmlEscape "${bio}")</textarea>
               </div>
               <div class="form-group">
                 <button type="submit"  class="btn btn-primary">Save</button>

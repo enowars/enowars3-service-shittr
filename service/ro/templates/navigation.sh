@@ -4,7 +4,7 @@ EOF
 if [ "$AUTHENTICATED" -eq 0 ]
 then 
 cat <<EOF
-    <a class="navbar-brand" href="/">${TITLE} | Shittr</a>
+    <a class="navbar-brand" href="/">$(htmlEscape "${TITLE}") | Shittr</a>
 EOF
 else
 cat <<EOF
