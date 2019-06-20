@@ -4,15 +4,18 @@
 
 - GET.sh, function g_static: File includsion should be possible
 - db.sh, function get_user: Path traversal with cookie value (exploitable?)
-- db.sh, generates weak sessions (file names are 4 chars base64)
-- XSS is possible (but not useful?)
-- CSRF is possible (but not useful? => add people as friends, see their posts + flags (?))
-- Private Profiles are still accessible over /@PROFILEID
-- Directory Listing and keys exposed in /static/
-- Shits are encrypted using a 16 byte ECB! => Recover the key, get all shits and fine. (Same initial key for all teams :D)
-- No follow restriction limit in GET.sh (g_follow_shittr), because followCnt does not exist (should be follow_cnt)
+
+
+KNOWN ISSUES / WON'T FIX
+- CSRF is possible, but not of much use?
+- No follow restriction limit in GET.sh (g_follow_shittr), because followCnt does not exist (should be follow_cnt) => red herring - nothing is done with that restriction anyway
 
 # CONFIRMED VULNS
+
+## Auth bypass 1
+- In dh.sh, the service generates seemingly strong (dd if=/dev/urandom) session IDs, but those are only 3-4 characters long, thus brute-forceable.
+- An attacker could BF a valid session within the deletion timeout of 15 min, because /logout does not delete the sessions. With valid sessions, the attacker could look for flags.
+- FIX: Use longer session ids
 
 ## Visibility Bypass 1
 - Viewing a 'private' user's profile and shits is possible at /@<userid>
@@ -63,7 +66,7 @@
 ## Crypto 1
 - The server.sh includes /bin/ in the PATH, so that the our "shit/openssl" tool is called instead of openssl in utils.sh
 - Uses simple ECB with the first 16 bytes as the key from enc.key to encrypt shits.
-- Shits can be downloaded from /settings, so one can obtained plaintext + ciphertext pairs to recover the key.
+- Shits can be downloaded from /settings, so one can obtain plaintext + ciphertext pairs to recover the key.
 - The key can then be used to decrypt other people's private shits!
 - FIX: Use more than 16 bytes and/or other crypto algorithm
 

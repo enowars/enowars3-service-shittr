@@ -35,9 +35,10 @@ valid_login() {
 }
 
 generate_session() {
-    local rand=$(dd if=/dev/urandom bs=1 count=3 | base64 | tr -dc '[:alnum:]\n\r' 2>/dev/null)
-    echo $(echo $1 | md5sum | cut -d ' ' -f 1) > "$SESSIONSDIR/$rand.session"
-    echo "$rand"
+    local rand=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | xxd |  tr -dc '[:digit:]\n\r' | rev | head -n1)
+    echo $(echo "$1" | md5sum | cut -d ' ' -f 1) > "$SESSIONSDIR/${rand:0:3}.session"
+    debug "Session is $rand"
+    echo "${rand:0:3}"
 }
 
 valid_session() {
