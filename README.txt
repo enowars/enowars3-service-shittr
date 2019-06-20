@@ -6,28 +6,36 @@ KNOWN ISSUES / WON'T FIX
 
 # CONFIRMED VULNS
 
-## 2nd line of file read
+## 2nd line of file read - Exploit: n (but works)
 - In db.sh, get_user the raw cookie value is passed to cat + sed, which will return the 2nd line from a file as the user name
 - I cannot think of an exploit :-/ 
 - FIX: Dunno? Properly chroot/escape the file name
 
-## Auth bypass 1
+## Auth bypass 1 - Exploit: y
 - In dh.sh, the service generates seemingly strong (dd if=/dev/urandom) session IDs, but those are only 3-4 characters long, thus brute-forceable.
 - An attacker could BF a valid session within the deletion timeout of 15 min, because /logout does not delete the sessions. With valid sessions, the attacker could look for flags.
 - FIX: Use longer session ids
 
-## Visibility Bypass 1
+## Visibility Bypass 1 - Exploit: n (but works!)
 - Viewing a 'private' user's profile and shits is possible at /@<userid>
 - The attacker cannot see private user's shits on /diarrhea or /shittrs
 - The attacker can, however, see those accounts mentioned in shits OR through an account B that the hidden user is following (B's following shittr list)
 - FIX: Prohibit access to hidden user's profiles
-- TODO: Checker implementation
+- CHECKER
+---> Register
+---> Set private
+---> Post shit with flag
+---> Post public shit with "@<myusername>" just took a dump.
 
 ## Visibility Bypass 2
 - Viewing a hidden user's shits is possible at /tag/<tag>
 - The attacker could guess the hashtags #flag or #enowars and monitor those for shits from the gamebot with a flag
 - FIX: Filter hidden user's shits from the hashtag
-- TODO: Checker implementation
+- CHECKER
+---> Register
+---> Set private
+---> Post shit with flag
+---> Post public shit with "#enowars" hashtag
 
 ## Visibility Bypass 3
 - If one unfollows himself, then the matching ids-Array in db.sh (fluid_diarrhea) is (), which matches all entries and therefore all shits are displayed.
@@ -53,7 +61,7 @@ KNOWN ISSUES / WON'T FIX
 
 ## ADMIN BYPASS 1
 - Register a user name that matches /admin/ 
-- The is_admin middle checks $DEBUG for it's string length (-n), so it will always be true for DEBUG=0 and DEBUG=1 
+- The is_admin middleware checks $DEBUG for it's string length (-n), so it will always be true for DEBUG=0 and DEBUG=1 
 - The attacker can therefore gain "ADMIN=1" easily
 - With that, the attacker can view /diarrhea and /shittrs or hidden user's without restrictions
 - FIX: Remove "-n" in the is_admin middleware
