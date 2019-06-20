@@ -178,9 +178,9 @@ fluid_diarrhea() {
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
+        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-        s=$(htmlEscape "$s")
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uid$sid.shit' class='viewlink'>View</a> $(like_url "$uid$sid")</div></div>")
     done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)"  2>/dev/null | head -n "$2")
@@ -198,9 +198,9 @@ get_tag() {
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
+        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-        s=$(htmlEscape "$s")
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uid$sid.shit' class='viewlink'>View</a> $(like_url "$uid$sid")</div></div>")
     done < <(tac "$HASHTAGSDIR/$(echo "#$1" | md5sum | cut -d' ' -f 1).tag"  2>/dev/null | head -n "$2")

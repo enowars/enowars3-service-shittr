@@ -85,9 +85,9 @@ g_shittr() {
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
+        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-        s=$(htmlEscape "$s")
         local uu=$(sed -n '2p' "$USERSDIR/$u.user")
         SHITS+=("<div class='shit'><a href='/@$uu' class='user'>@$uu</a><div class='content'>$s</div><div class='links'><a href='/$u$q.shit' class='viewlink'>View</a> $(like_url "$u$q")</div></div>")
     done < <(last_shits "$OUSER" 25)
@@ -266,9 +266,9 @@ g_vshit() {
         s=$(echo "$s" | base64 -d | dec | base64 -d)
     fi
     s=$(urldecode "$s")
+    s=$(htmlEscape "$s")
     s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
     s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
-    s=$(htmlEscape "$s")
     local u=$(sed -n '2p' "$USERSDIR/$ui.user")
     SHIT="<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'>$(like_url "$ui" "$si")</div></div>"
 
