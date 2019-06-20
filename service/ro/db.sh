@@ -156,7 +156,7 @@ create_tag() {
 fluid_diarrhea() {
     declare -a ids=();
     declare -a -g SHITS=();
-    ids+=("$(echo $USER | md5sum | cut -d ' ' -f 1)")
+    local myid=$(echo $USER | md5sum | cut -d ' ' -f 1)
     while read l;
     do
         local ll=$(basename "$l" | sed -e 's/\.follower//g')
@@ -167,6 +167,7 @@ fluid_diarrhea() {
         ids+=("$ll")
     done < <(find "$FOLLOWERSDIR/$(echo "$1" | md5sum | cut -d' ' -f 1)/" -type f -name '*.follower'  2>/dev/null)
 
+    debug "FOLLOWER IDS are ${ids[@]}"
     [ "$ADMIN" -gt 0 ] && local ids='[a-z0-9]{64}' || local ids=$(join_by '|' "${ids[@]}")
 
     while read l;
@@ -183,7 +184,7 @@ fluid_diarrhea() {
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
         SHITS+=("<div class='shit'><a href='/@$u' class='user'>@$u</a><div class='content'>$s</div><div class='links'><a href='/$uid$sid.shit' class='viewlink'>View</a> $(like_url "$uid$sid")</div></div>")
-    done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)"  2>/dev/null | head -n "$2")
+    done < <(tac "$SHITSDIR/diarrhea.log" | grep -P "($ids)|($myid)"  2>/dev/null | head -n "$2")
 }
 
 get_tag() {
