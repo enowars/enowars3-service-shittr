@@ -98,3 +98,7 @@ KNOWN ISSUES / WON'T FIX
 - Implement language choosing based on the Accept-Header
 - Implement answering to shits
 - (?) Statuscode ist Stunden seit EPOCH Module $realStatuscode
+
+# Bugs
+- When removing shits, also remove them from the diarrhea.log
+- If PATH=$PATH:/bin/ is removed, then the real openssl is used -> No RCE2, Crypto1

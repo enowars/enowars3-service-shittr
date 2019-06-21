@@ -76,6 +76,10 @@ g_shittr() {
     declare -a SHITS=()
     while read q
     do
+        if [ ! -f "$SHITSDIR/$u/$q.shit" ]
+        then 
+            continue
+        fi 
         local s=$(cat "$SHITSDIR/$u/$q.shit" | head -n 1)
         if grep -qoP 'Private=0' "$SHITSDIR/$u/$q.shit" || [[ "$USER" = "$OUSER" ]]; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)

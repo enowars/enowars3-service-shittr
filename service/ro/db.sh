@@ -182,6 +182,10 @@ fluid_diarrhea() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
+        if [ ! -f "$SHITSDIR/$uid/$sid.shit" ]
+        then 
+            continue
+        fi 
         local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1)
         if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit"; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)
@@ -201,6 +205,10 @@ get_tag() {
     do 
         local IFS=':'
         read -r uid sid <<< "$l"
+        if [ ! -f "$SHITSDIR/$uid/$sid.shit" ]
+        then 
+            continue
+        fi 
         local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1)
         if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit"; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)
