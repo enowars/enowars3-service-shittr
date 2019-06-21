@@ -62,7 +62,6 @@ p_login() {
 
 p_settings() {
     if [ $AUTHENTICATED -eq 0 ]; then
-        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -77,7 +76,6 @@ p_settings() {
 
 p_shit() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
     local user=$(get_user "$(get_cookie 'auth')")
@@ -98,7 +96,6 @@ p_shit() {
 
 p_download() {
     if [ ! $AUTHENTICATED -eq 1 ]; then
-        addMsg "danger" "You are not logged in!"
         redirect "/login"
     fi
 
