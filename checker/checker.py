@@ -182,12 +182,11 @@ class ShittrChecker(BaseChecker):
 
     def putflag_private_private_post(self):
         user, pw = self.get_or_create_account()
-
         self.login(user, pw)
-
         self.post_settings(public=False)
-
         self.post_shit(self.flag, private=True)
+
+        self.post_shit("In times of war, there is no time to shit. #enowars",private=False)
 
         self.logout()
 
