@@ -8,7 +8,7 @@ create_user() {
     echo "$pw" > "$USERSDIR/$id.user"
     echo "$1" >> "$USERSDIR/$id.user"
     echo "Public=on" >> "$USERSDIR/$id.user"
-    echo "Bio=SGVsbG8sIEknbSBhIHNoaXR0ciE=" >> "$USERSDIR/$id.user"
+    echo "Bio=SGVsbG8sIEknbSB1c2luZyBzaGl0dHIhCg==" >> "$USERSDIR/$id.user"
     echo "Admin=0" >> "$USERSDIR/$id.user"
     follow_shittr "$1" "$1"
     return 0
