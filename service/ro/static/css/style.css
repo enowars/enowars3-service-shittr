@@ -9,7 +9,7 @@ body {
     font-size: 1.5em;
 }
 
-.shit {
+.shit, .alert {
     word-wrap: anywhere;
 }
 
