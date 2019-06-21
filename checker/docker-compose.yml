@@ -1,34 +1,35 @@
-version: '3'
+version: '3.6'
 services:
   shittr-backend:
-    image: 10.13.37.6:5000/shittr-backend
     build: .
-    networks:
-      - bridge
-      - enoverlay
     environment:
-      - MONGO_ENABLED=1
-      - MONGO_HOST=checkerdb_mongo_1
-      - MONGO_PORT=27017
-      - MONGO_USER=ipv6islove
-      - MONGO_PASSWORD=dockerislove
-  shittr-frontend:
-    image: nginx:1.13-alpine
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - shittr-backend
+    - MONGO_ENABLED=1
+    - MONGO_HOST=checkerdb_mongo_1
+    - MONGO_PORT=27017
+    - MONGO_USER=ipv6islove
+    - MONGO_PASSWORD=dockerislove
+    image: 10.13.37.6:5000/shittr-backend
     networks:
-      - enoverlay
-    labels:
-        - "traefik.enable=true"
-        - "traefik.backend=shittr-checker"
-        - "traefik.docker.network=enoverlay"
-        - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com"
-        - "traefik.port=80"
-
+    - bridge
+    - enoverlay
+  shittr-frontend:
+    depends_on:
+    - shittr-backend
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.backend=shittr-checker
+      - traefik.docker.network=enoverlay
+      - traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com
+      - traefik.port=80
+      replicas: 1
+    image: nginx:1.13-alpine
+    networks:
+    - enoverlay
+    volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 networks:
-   bridge:
-     external: true
-   enoverlay:
-     external: true
+  bridge:
+    external: true
+  enoverlay:
+    external: true
