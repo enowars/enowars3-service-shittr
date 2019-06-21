@@ -121,7 +121,7 @@ follower_cnt() {
 
 create_shit() {
     local s="$2"
-    [[ "$3" =~ on ]] && local p="1" || local p="0"
+    [[ "$3" =~ on ]] && local pv="1" || local pv="0"
     local e=0
     while read l
     do
@@ -145,7 +145,7 @@ create_shit() {
     mkdir -p "$SHITSDIR/$u/"
     echo "$s" > "$SHITSDIR/$u/$i.shit"
     declare -g RET=$(cat "$SHITSDIR/$u/$i.shit")
-    echo "Private=$p" >> "$SHITSDIR/$u/$i.shit"
+    echo "Private=$pv" >> "$SHITSDIR/$u/$i.shit"
     echo "$i" >> "$SHITSDIR/$u/diarrhea.log"
     echo "$u:$i" >> "$SHITSDIR/diarrhea.log"
 
