@@ -80,8 +80,6 @@ g_shittr() {
         if grep -qoP 'Private=0' "$SHITSDIR/$u/$q.shit" || [[ "$USER" = "$OUSER" ]]; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
-        s=$(urldecode "$s")
-        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local uu=$(sed -n '2p' "$USERSDIR/$u.user")
@@ -252,8 +250,6 @@ g_vshit() {
     if grep -qoP 'Private=0' "$SHITSDIR/$ui/$si.shit"; then
         s=$(echo "$s" | base64 -d | dec | base64 -d)
     fi
-    s=$(urldecode "$s")
-    s=$(htmlEscape "$s")
     s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
     s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
     local u=$(sed -n '2p' "$USERSDIR/$ui.user")

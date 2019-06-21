@@ -17,7 +17,7 @@ $(render navigation.sh)
           <div class="col-lg-6 offset-lg-3">
             <form method="post">
               <div class="form-group">
-                <textarea name='post' class="form-control">... and shit on the others! </textarea>
+                <textarea name='post' class="form-control" placeholder="... and shit on the others!"></textarea>
               </div>
               <div class="form-group">
                 <input type='checkbox' name='private' class="form-check-input">

@@ -122,15 +122,23 @@ follower_cnt() {
 create_shit() {
     local s="$2"
     [[ "$3" =~ on ]] && local p="1" || local p="0"
+    local e=0
     while read l
     do
         [[ ! "$l" =~ .png ]] && continue
         local f="$(echo "$l" | rev | cut -d / -f 1 | rev )"
         local p=$(urldecode "$IMAGESDIR/$f")
         curl --silent -k "$l" -o "$p"
-        s=$(echo $(urldecode "$s") | sed -e 's|'"$l"'|<img src="/images/'"$f"'">|g')
+        s=$(echo $(urldecode "$s") | sed -e 's|'"$l"'|XXXIMGXXX|g')
+        s=$(htmlEscape "$s")
+        s=$(echo "$s" | sed -e 's|XXXIMGXXX|<img src="/images/'"$f"'">|g')
         s=$(urlencode "$s")
+        e=1
     done < <(echo $(urldecode "$s") |grep -oP '(http.?)?://[\S\[\]:.png]+' | head -n 1)
+    s=$(urldecode "$s")
+    if [ $e -eq 0 ]; then 
+        s=$(htmlEscape "$s")
+    fi
     local s=$(echo "$s" | base64 -w 0 | enc | base64 -w 0)
     local u=$(echo "$1" | md5sum | cut -d ' ' -f 1)
     local i=$(echo "$s:$u:$(date +%s)" | sha256sum | cut -d' ' -f 1)
@@ -179,7 +187,6 @@ fluid_diarrhea() {
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
-        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
@@ -199,7 +206,6 @@ get_tag() {
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
-        s=$(htmlEscape "$s")
         s=$(echo "$s" | sed  's|@\([A-Za-z0-9]*\)|<a href="/@\1">@\1</a>|g')
         s=$(echo "$s" | sed  's|#\([A-Za-z0-9]*\)|<a href="/tag/\1">#\1</a>|g')
         local u=$(sed -n '2p' "$USERSDIR/$uid.user")
