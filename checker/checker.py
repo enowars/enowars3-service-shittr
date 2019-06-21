@@ -28,14 +28,16 @@ class ShittrChecker(BaseChecker):
     def __init__(self, *args, **kwargs):
         super(ShittrChecker, self).__init__(*args, **kwargs)
         self.putflag_funcs = [
-            self.putflag_public_public_post,
-            self.putflag_public_private_post,
-            self.putflag_user_bio
+            self.putflag_user_bio,              # idx = 0
+            self.putflag_public_private_post,   # idx = 1
+            self.putflag_private_public_post,   # idx = 2
+            self.putflag_private_private_post,  # idx = 3
         ]
         self.getflag_funcs = [
-            self.getflag_public_public_post,
-            self.getflag_public_private_post,
-            self.getflag_user_bio
+            self.getflag_user_bio,              # idx = 0
+            self.getflag_public_private_post,   # idx = 1
+            self.getflag_private_public_post,   # idx = 2
+            self.getflag_private_private_post,  # idx = 3
         ]
 
         # FUCK MY LIFE. I WANNA DIE
@@ -49,23 +51,59 @@ class ShittrChecker(BaseChecker):
         self.SETTINGS_URL = "https://{}:{}/settings".format(self.address, self.port)
         self.MYPROFILE_URL = "https://{}:{}/@USERNAME".format(self.address, self.port)
 
+    def putflag(self):
+        self.putflag_funcs[self.flag_idx]()
+
+    def getflag(self):
+        self.getflag_funcs[self.flag_idx]()
+
+    def putnoise(self):
+        pass
+
+    def getnoise(self):
+        pass
+
+    def havoc(self):
+        if self.round % 3 == 0:
+            current_time = time.time()
+            for f in os.listdir():
+                if not '.cookie' in f:
+                    continue
+                creation_time = os.path.getctime(f)
+                if (current_time - creation_time) // (5 * 60):
+                    os.unlink(f)
+
+    def exploit(self):
+        pass
+
     def putflag_user_bio(self):
         user, pw = self.get_or_create_account()
 
         self.login(user, pw)
 
-        self.post_settings(self.flag, True)
+        self.post_settings(bio=self.flag)
 
         self.logout()
 
-    def putflag_public_public_post(self):
-        user, pw = self.get_or_create_account()
+    def getflag_user_bio(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
+        user, pw = self.get_or_create_account(existing=True)
 
+        self.info("Logging in as {} / {}".format(user, pw))
         self.login(user, pw)
 
-        self.post_shit(self.flag)
+        ret = self._get_request(self.SETTINGS_URL, useCookies=True)
 
-        self.logout()
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+
+        if not '''<textarea name='bio'  class="form-control">{}</textarea>'''.format(self.flag) in str(ret):
+            raise BrokenServiceException("Flag not found in /settings")
+
 
     def putflag_public_private_post(self):
         user, pw = self.get_or_create_account()
@@ -76,9 +114,11 @@ class ShittrChecker(BaseChecker):
 
         self.logout()
 
+    def getflag_public_private_post(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
+        user, pw = self.get_or_create_account(existing=True)
 
-    def logout(self):
-        ret = self._get_request(self.SHIT_URL, useCookies=True)
+        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
@@ -87,7 +127,66 @@ class ShittrChecker(BaseChecker):
             raise BrokenServiceException("Wrong Content Type header")
 
 
-    def post_settings(self, bio, public):
+        if not '''<div class='content'>{}</div>'''.format(self.flag) in str(ret):
+            raise BrokenServiceException("Flag not found in /@{}".format(user))
+
+
+    def putflag_private_public_post(self):
+        user, pw = self.get_or_create_account()
+
+        self.login(user, pw)
+
+        self.post_settings(public=False)
+
+        self.post_shit(self.flag, private=False)
+
+        self.logout()
+
+    def getflag_private_public_post(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
+        user, pw = self.get_or_create_account(existing=True)
+
+        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
+
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+
+        if not '''<div class='content'>{}</div>'''.format(self.flag) in str(ret):
+            raise BrokenServiceException("Flag not found in /@{}".format(user))
+
+    def putflag_private_private_post(self):
+        user, pw = self.get_or_create_account()
+
+        self.login(user, pw)
+
+        self.post_settings(public=False)
+
+        self.post_shit(self.flag, private=True)
+
+        self.logout()
+
+    def getflag_private_private_post(self):
+        self._get_request(self.LOGIN_URL, useCookies=True)
+        user, pw = self.get_or_create_account(existing=True)
+
+        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
+
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+
+        if not '''<div class='content'>{}</div>'''.format(self.flag) in str(ret):
+            raise BrokenServiceException("Flag not found in /@{}".format(user))
+
+
+    def post_settings(self, bio="Hello, I'm using shittr!", public=True):
         ret = self._post_request(self.SETTINGS_URL, {'public': 'on' if public else '', 'bio': bio}, useCookies=True, follow=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
@@ -106,9 +205,17 @@ class ShittrChecker(BaseChecker):
         if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
-
     def login(self, user, pw):
         ret = self._post_request(self.LOGIN_URL, {'username': user, 'password': pw}, useCookies=True)
+
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+    def logout(self):
+        ret = self._get_request(self.SHIT_URL, useCookies=True)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
@@ -119,10 +226,13 @@ class ShittrChecker(BaseChecker):
     def get_or_create_account(self, existing=False):
         if existing:
             # Return known credentials
-            return self.get_account()
+            user, pw = self.get_account()
         else:
             # Signup
-            return self.create_account()
+            user, pw = self.create_account()
+
+        print("Login is: ", user, pw)
+        return user, pw
 
     def get_account(self):
         try:
@@ -141,13 +251,14 @@ class ShittrChecker(BaseChecker):
 
         ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=True, follow=True)
 
-        print(ret)
+        if '''n0p3, user already exists''' in ret:
+            raise BrokenServiceException("User already exists")
+
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
 
         if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
-
 
         self.team_db[self.flag] = {
             'user': user,
@@ -237,82 +348,6 @@ class ShittrChecker(BaseChecker):
                 self.team_db[cookie_file] = cookie_f.read()
 
         return buffer.getvalue().decode('utf-8')
-
-    def getflag_public_private_post(self):
-        self._get_request(self.LOGIN_URL, useCookies=True)
-        user, pw = self.get_or_create_account(existing=True)
-
-        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
-
-        if not '''1337 WORKS FOR ME''' in ret:
-            raise BrokenServiceException("Wrong HTTP status code")
-
-        if not '''Content Type: 1337/5P34K''' in ret:
-            raise BrokenServiceException("Wrong Content Type header")
-
-
-        if not '''<div class='content'>{}</div>'''.format(self.flag) in str(ret):
-            raise BrokenServiceException("Flag not found in /@{}".format(user))
-
-    def getflag_public_public_post(self):
-        self._get_request(self.LOGIN_URL, useCookies=True)
-        user, pw = self.get_or_create_account(existing=True)
-
-        ret = self._get_request(self.MYPROFILE_URL.replace("USERNAME", user), useCookies=True)
-
-        if not '''1337 WORKS FOR ME''' in ret:
-            raise BrokenServiceException("Wrong HTTP status code")
-
-        if not '''Content Type: 1337/5P34K''' in ret:
-            raise BrokenServiceException("Wrong Content Type header")
-
-        if not '''<div class='content'>{}</div>'''.format(self.flag) in ret:
-            raise BrokenServiceException("Flag {} not found in /@{}: {}".format(self.flag, user, ret))
-
-
-    def getflag_user_bio(self):
-        self._get_request(self.LOGIN_URL, useCookies=True)
-        user, pw = self.get_or_create_account(existing=True)
-
-        self.info("Logging in as {} / {}".format(user, pw))
-        self.login(user, pw)
-
-        ret = self._get_request(self.SETTINGS_URL, useCookies=True)
-
-        if not '''1337 WORKS FOR ME''' in ret:
-            raise BrokenServiceException("Wrong HTTP status code")
-
-        if not '''Content Type: 1337/5P34K''' in ret:
-            raise BrokenServiceException("Wrong Content Type header")
-
-
-        if not '''<textarea name='bio'  class="form-control">{}</textarea>'''.format(self.flag) in str(ret):
-            raise BrokenServiceException("Flag not found in /settings")
-
-    def putflag(self):
-        self.putflag_funcs[self.flag_idx]()
-
-    def getflag(self):
-        self.getflag_funcs[self.flag_idx]()
-
-    def putnoise(self):
-        pass
-
-    def getnoise(self):
-        pass
-
-    def havoc(self):
-        if self.round % 3 == 0:
-            current_time = time.time()
-            for f in os.listdir():
-                if not '.cookie' in f:
-                    continue
-                creation_time = os.path.getctime(f)
-                if (current_time - creation_time) // (5 * 60):
-                    os.unlink(f)
-
-    def exploit(self):
-        pass
 
 
 app = ShittrChecker.service
