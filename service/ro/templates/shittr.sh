@@ -23,7 +23,7 @@ $(render navigation.sh)
                     <td style="text-align: center">$(if [ $if -eq 0 ]; then echo "<a href='/@${OUSER}/follow'>Follow</a>"; else  echo "<a href='/@${OUSER}/unfollow'>Unfollow</a>"; fi)</td>
                   </tr>
                   <tr>
-                   <td><a href='/@${OUSER}/following'>$followCnt</a> Shittrs</td>
+                   <td><a href='/@${OUSER}/following'>$followCnt</a> Following</td>
                   </tr>
                   <tr>
                     <td><a href='/@${OUSER}/followers'>$followerCnt</a> Followers</td>

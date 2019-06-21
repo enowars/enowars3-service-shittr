@@ -187,7 +187,7 @@ fluid_diarrhea() {
             continue
         fi 
         local s=$(cat "$SHITSDIR/$uid/$sid.shit" | head -n 1)
-        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit"; then
+        if grep -qoP 'Private=0' "$SHITSDIR/$uid/$sid.shit" || [[ "$uid" = "$myid" ]]; then
             s=$(echo "$s" | base64 -d | dec | base64 -d)
         fi
         s=$(urldecode "$s")
