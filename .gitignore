@@ -1,2 +1,7 @@
 .vagrant/
 .git.old/
+
+*-VBoxSVC-*.log
+checker/.data/
+checker/env/
+checker/exploits/__pycache__/
