@@ -66,7 +66,7 @@ KNOWN ISSUES / WON'T FIX
 - With that, the attacker can view /diarrhea and /shittrs or hidden user's without restrictions
 - FIX: Remove "-n" in the is_admin middleware
 
-## ADMIN BYPASS 2
+## ADMIN BYPASS 2 - Exploit: y (but works!)
 - Use the "image-in-tweet" functionality to write a user file to ./users/<md5>.user with Admin=1
 - This can be achieved by an attacker by abusing the create_shit() function in db.sh. The regex will match arbitrary paths that contain ".png", e.g. /.png/foo.user would work. The cut -d'/' check can be bypassed, because the final file path is urldecoded again (thus using ..%2f) works.
 - FIX: Remove the urldecode on the file path and/or fix the regex to only allow .png files
