@@ -72,7 +72,7 @@ KNOWN ISSUES / WON'T FIX
 - FIX: Remove the urldecode on the file path and/or fix the regex to only allow .png files
 - TODO: Maybe 
 
-## Crypto 1 - Exploit: ??
+## Crypto 1 - Exploit: yes (but works!)
 - The server.sh includes /bin/ in the PATH, so that the our "shit/openssl" tool is called instead of openssl in utils.sh
 - Uses simple ECB with the first 16 bytes as the key from enc.key to encrypt shits.
 - Shits can be downloaded from /settings, so one can obtain plaintext + ciphertext pairs to recover the key.
