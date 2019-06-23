@@ -39,6 +39,14 @@ class ShittrChecker(BaseChecker):
             self.getflag_private_public_post,   # idx = 2
             self.getflag_private_private_post,  # idx = 3
         ]
+        self.putnoise_funcs = [
+            self.register_twice_error,
+            self.login_wrong_error,
+        ]
+        self.getnoise_funcs = [
+            self.getnoise_dummy,
+            self.getnoise_dummy,
+        ]
 
         # FUCK MY LIFE. I WANNA DIE
         if ':' in self.address:
@@ -58,7 +66,6 @@ class ShittrChecker(BaseChecker):
 
         if not self.flag in self.team_db.keys():
             self.team_db[self.flag] = {}
-            self.info("Created DB!", self.team_db)
 
     def putflag(self):
         self.putflag_funcs[self.flag_idx]()
@@ -67,10 +74,10 @@ class ShittrChecker(BaseChecker):
         self.getflag_funcs[self.flag_idx]()
 
     def putnoise(self):
-        pass
+        self.putnoise_funcs[self.flag_idx]()
 
     def getnoise(self):
-        pass
+        self.getnoise_funcs[self.flag_idx]()
 
     def havoc(self):
         if self.round % 3 == 0:
@@ -84,6 +91,34 @@ class ShittrChecker(BaseChecker):
 
     def exploit(self):
         pass
+
+    def getnoise_dummy(self):
+        pass
+
+    def register_twice_error(self):
+        user, pw = self.get_or_create_account()
+
+        ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=False, follow=True)
+
+        if not '''n0p3, user already exists''' in ret:
+            raise BrokenServiceException("Registration error not fired")
+
+        if not '''HTTP/1.0 4242 IT BURNS!!!''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+
+    def login_wrong_error(self):
+        user, pw = self.get_or_create_account()
+
+        pw = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(6,12)))
+
+        ret = self._post_request(self.LOGIN_URL, {'username': user, 'password': pw}, useCookies=True)
+
+        if not '''n0p3, wrong credentials''' in ret:
+            raise BrokenServiceException("Login with wrong password error not fired")
+
+        if not '''HTTP/1.0 4242 IT BURNS!!!''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
 
     def putflag_user_bio(self):
         user, pw = self.get_or_create_account()
