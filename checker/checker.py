@@ -40,12 +40,14 @@ class ShittrChecker(BaseChecker):
             self.getflag_private_private_post,  # idx = 3
         ]
         self.putnoise_funcs = [
-            self.register_twice_error,
-            self.login_wrong_error,
+            self.putnoise_register_twice_error, # idx = 0
+            self.putnoise_login_wrong_error,    # idx = 1
+            self.putnoise_follow_user,          # idx = 2
         ]
         self.getnoise_funcs = [
-            self.getnoise_dummy,
-            self.getnoise_dummy,
+            self.getnoise_dummy,                # idx = 0
+            self.getnoise_dummy,                # idx = 1
+            self.getnoise_follow_user,          # idx = 2
         ]
 
         # FUCK MY LIFE. I WANNA DIE
@@ -59,6 +61,9 @@ class ShittrChecker(BaseChecker):
         self.LOGOUT_URL = "https://{}:{}/logout".format(self.address, self.port)
         self.SETTINGS_URL = "https://{}:{}/settings".format(self.address, self.port)
         self.MYPROFILE_URL = "https://{}:{}/@USERNAME".format(self.address, self.port)
+        self.FOLLOW_USER_URL = "https://{}:{}/@USERNAME/follow".format(self.address, self.port)
+        self.FOLLOWERS_URL = "https://{}:{}/@USERNAME/followers".format(self.address, self.port)
+        self.FOLLOWING_URL = "https://{}:{}/@USERNAME/following".format(self.address, self.port)
 
 
         self.fkr = faker.Faker()
@@ -66,6 +71,12 @@ class ShittrChecker(BaseChecker):
 
         if not self.flag in self.team_db.keys():
             self.team_db[self.flag] = {}
+
+        # self.teamdbidx = "{}_{}".format(self.round, self.team_id)
+        # if self.round > 1:
+        #     self.prevteamdbix = "{}_{}".format(self.round-1, self.team_id)
+        # else:
+        #     self.prevteamdbix = None
 
     def putflag(self):
         self.putflag_funcs[self.flag_idx]()
@@ -95,7 +106,47 @@ class ShittrChecker(BaseChecker):
     def getnoise_dummy(self):
         pass
 
-    def register_twice_error(self):
+    def putnoise_follow_user(self):
+        user0, pw0 = self.get_or_create_account()
+        self.login(user0, pw0)
+        self.post_shit(self.fkr.text(max_nb_chars=random.randint(50,250), ext_word_list=None))
+        self.logout()
+
+
+        user1, pw1 = self.get_or_create_account(idx=1)
+        self.login(user1, pw1, idx=1)
+        self.follow_user(user0, idx=1) #TODO: Implement this
+        self.logout(idx=1)
+
+    def getnoise_follow_user(self):
+        user0, pw0 = self.get_or_create_account(existing=True)
+        user1, pw1 = self.get_or_create_account(existing=True, idx=1)
+        self.login(user1, pw1, idx=1)
+
+        ret = self._get_request(self.FOLLOWERS_URL.replace("USERNAME", user0), useCookies=True, idx=1)        
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+        if not "@{}".format(user1) in ret:
+            raise BrokenServiceException("User not in followers list")
+
+        ret = self._get_request(self.FOLLOWING_URL.replace("USERNAME", user1), useCookies=True, idx=1)        
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
+        if not "@{}".format(user0) in ret:
+            raise BrokenServiceException("User not in following list")
+
+        self.logout(idx=1)
+
+
+    def putnoise_register_twice_error(self):
         user, pw = self.get_or_create_account()
 
         ret = self._post_request(self.REG_URL, {'username': user, 'password': pw}, useCookies=False, follow=True)
@@ -107,7 +158,7 @@ class ShittrChecker(BaseChecker):
             raise BrokenServiceException("Wrong HTTP status code")
 
 
-    def login_wrong_error(self):
+    def putnoise_login_wrong_error(self):
         user, pw = self.get_or_create_account()
 
         pw = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(random.randint(6,12)))
@@ -191,7 +242,7 @@ class ShittrChecker(BaseChecker):
         user2, pw2 = self.get_or_create_account(idx=1)
         self.login(user2, pw2, idx=1)
         self.post_shit("Uhh, looks like @{} just took a huge dump.".format(user))
-        self.logout()
+        self.logout(idx=1)
 
     def getflag_private_public_post(self):
         self._get_request(self.LOGIN_URL, useCookies=True)
@@ -267,6 +318,14 @@ class ShittrChecker(BaseChecker):
         if not '''Content Type: 1337/5P34K''' in ret:
             raise BrokenServiceException("Wrong Content Type header")
 
+    def follow_user(self, user_to_follow, idx=0):
+        ret = self._get_request(self.FOLLOW_USER_URL.replace("USERNAME", user_to_follow), useCookies=True, idx=idx)        
+        if not '''1337 WORKS FOR ME''' in ret:
+            raise BrokenServiceException("Wrong HTTP status code")
+
+        if not '''Content Type: 1337/5P34K''' in ret:
+            raise BrokenServiceException("Wrong Content Type header")
+
     def login(self, user, pw, idx=0):
         ret = self._post_request(self.LOGIN_URL, {'username': user, 'password': pw}, useCookies=True, idx=idx)
 
@@ -277,7 +336,7 @@ class ShittrChecker(BaseChecker):
             raise BrokenServiceException("Wrong Content Type header")
 
     def logout(self,idx=0):
-        ret = self._get_request(self.SHIT_URL, useCookies=True, idx=idx)
+        ret = self._get_request(self.LOGOUT_URL, useCookies=True, idx=idx)
 
         if not '''1337 WORKS FOR ME''' in ret:
             raise BrokenServiceException("Wrong HTTP status code")
@@ -293,7 +352,6 @@ class ShittrChecker(BaseChecker):
             # Signup
             user, pw = self.create_account(idx=idx)
 
-        print("Login is: ", user, pw)
         return user, pw
 
     def get_account(self, idx=0):
