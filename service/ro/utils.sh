@@ -68,3 +68,23 @@ function htmlEscape () {
     s=${s//'"'/&quot;}
     echo $s
 }
+
+serverTime() {
+    date
+}
+
+pageTimeStart() {
+    declare -g pageTimeStartS=$(date +%s)
+    declare -g pageTimeStartNS=$(date +%N)
+}
+pageTime() {
+    nowS=$(date +%s)
+    nowNS=$(date +%N)
+    diffS=$((nowS - pageTimeStartS))
+    if [ $diffS -eq 0 ]; then 
+        diffNS=$((nowNS - pageTimeStartNS))
+        echo "$diffNS ns"
+    else
+        echo "$diffS s"
+    fi
+}

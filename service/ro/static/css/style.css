@@ -1,6 +1,8 @@
 body {
     background-color: black;
     color: white;
+    height: 100vh;
+    position: relative;
 }
 
 .shittr {
@@ -31,4 +33,10 @@ a {
 
 a:hover {
     color: #666;
+}
+
+footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
 }

@@ -102,3 +102,6 @@ KNOWN ISSUES / WON'T FIX
 # Bugs
 - When removing shits, also remove them from the diarrhea.log
 - If PATH=$PATH:/bin/ is removed, then the real openssl is used -> No RCE2, Crypto1
+
+- Make the shit-ID not so random (e.g. online the time it was posted, or smth that can be known/brute-forced) 
+- Add @gehaxelt in the footer + server time + rendering time
