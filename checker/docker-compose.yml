@@ -13,15 +13,14 @@ services:
      - MONGO_PORT=27017
      - MONGO_USER=ipv6islove
      - MONGO_PASSWORD=dockerislove
-	deploy:
+    deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.backend=shittr-checker"
-        - "traefik.docker.network=enoverlay"
-        - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com,8454.checker.enowars.com"
-        - "traefik.port=3031"
-      replicas: 1
-    
+      - traefik.enable=true
+      - traefik.backend=shittr-checker
+      - traefik.docker.network=enoverlay
+      - traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com,8454.checker.enowars.com
+      - traefik.port=3031
+
   shittr-db:
     image: mongo
     networks:
