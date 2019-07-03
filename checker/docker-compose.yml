@@ -19,7 +19,7 @@ services:
         - "traefik.backend=shittr-checker"
         - "traefik.docker.network=enoverlay"
         - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com,8454.checker.enowars.com"
-        - "traefik.port=80"
+        - "traefik.port=3031"
       replicas: 1
     
   shittr-db:
