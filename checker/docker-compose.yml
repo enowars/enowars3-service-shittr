@@ -3,7 +3,7 @@ version: '3.6'
 services:
   shittr-backend:
     build: .
-    image: 10.13.37.7:5000/shittr-backend
+    image: dockerreg.enowars.com:5000/shittr-backend
     networks:
      - bridge
      - enoverlay
