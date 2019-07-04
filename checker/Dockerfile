@@ -18,5 +18,5 @@ COPY . .
 
 ENTRYPOINT [ "uwsgi", "--uid", "uwsgi", \
                "--socket", "0.0.0.0:3031", \
-               "--protocol", "uwsgi", \
+               "--protocol", "http", \
                "--ini", "/checker/uwsgi.ini" ]
