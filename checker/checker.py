@@ -420,8 +420,8 @@ class ShittrChecker(BaseChecker):
         try:
             c.perform()
             c.close()
-        except pycurl.error:
-            raise OfflineException("Service not reachable")
+        except pycurl.error as e:
+            raise OfflineException(f"Service not reachable: { sys.exc_info() }")
 
         if useCookies:
             with open(cookie_file, 'r') as cookie_f:
