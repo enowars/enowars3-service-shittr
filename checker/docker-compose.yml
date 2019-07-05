@@ -20,9 +20,9 @@ services:
         - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com,8454.checker.enowars.com"
         - "traefik.port=3031"
       replicas: 2
-#      placement:
-#        constraints:
-#          - "node.hostname!=mainvm"
+      placement:
+        constraints:
+          - "node.hostname==blade2"
   shittr-db:
     image: mongo
     networks:
