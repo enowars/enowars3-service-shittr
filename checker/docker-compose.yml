@@ -19,7 +19,10 @@ services:
         - "traefik.docker.network=enoverlay"
         - "traefik.frontend.rule=Host:shittr.checker.enowars.com,service8.checker.enowars.com,8454.checker.enowars.com"
         - "traefik.port=3031"
-      replicas: 1
+      replicas: 2
+#      placement:
+#        constraints:
+#          - "node.hostname!=mainvm"
   shittr-db:
     image: mongo
     networks:
@@ -30,7 +33,7 @@ services:
     deploy:
       placement:
         constraints:
-          - "node.hostname==mainvm"
+          - "node.hostname==c11"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ipv6islove
       MONGO_INITDB_ROOT_PASSWORD: dockerislove
