@@ -2,6 +2,7 @@ from enochecker import BaseChecker, BrokenServiceException, run, OfflineExceptio
 from urllib.parse import urlencode
 from io import BytesIO
 import string, random, faker, pycurl, os, time, re, hashlib, sys
+import traceback
 
 class ShittrChecker(BaseChecker):
     port = 31337
@@ -420,8 +421,8 @@ class ShittrChecker(BaseChecker):
         try:
             c.perform()
             c.close()
-        except pycurl.error:
-            raise OfflineException("Service not reachable")
+        except pycurl.error as ex:
+            raise OfflineException()
 
         if useCookies:
             with open(cookie_file, 'r') as cookie_f:
